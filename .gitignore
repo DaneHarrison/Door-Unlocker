@@ -1,6 +1,5 @@
-.vscode
 node_modules
 src/Server/Config
 src/Server/PostgreSQL
-pgdata
-docker-compose.yml
+**/pgdata
+.env

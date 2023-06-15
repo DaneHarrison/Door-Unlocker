@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  db:
+    image: postgres
+    environment: 
+      POSTGRES_PASSWORD: a83ZTNNcdGBuXw?
+      POSTGRES_USER: owner
+      POSTGRES_DB: unlocker
+    volumes: 
+      - ./pgdata:/var/lib/postgres/data
+    ports:
+      - '5432:5432'
+  unlocker:
+    stdin_open: true
+    image: 44d169d4452a
+    depends_on:
+      - db
+    ports:
+      - '4000:4000'
+
+
+# we will want to pull variables from .env file      
