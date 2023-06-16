@@ -1,31 +1,25 @@
 {
-  "name": "serverstuff",
+  "name": "door-unlocker",
   "version": "1.0.0",
-  "main": "serverLogic.js",
+  "description": "<div align='center'> <h1>Door-Unlocker</h1> </div>",
+  "main": "index.js",
   "directories": {
-    "test": ""
+    "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
-  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaneHarrison/Door-Unlocker.git"
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@stablelib/base64": "^1.0.0",
-    "@stablelib/utf8": "^1.0.0",
-    "axios": "^0.20.0",
-    "body-parser": "^1.19.0",
-    "bulma": "^0.9.0",
-    "cookie-parser": "^1.4.5",
-    "express": "^4.17.1",
-    "js-cookie": "^2.2.1",
-    "nodemailer": "^6.4.16",
-    "passport": "^0.4.1",
-    "passport-google-oauth20": "^2.0.0",
-    "puid": "^1.0.7",
-    "python-shell": "^2.0.1",
-    "tweetnacl": "^1.0.3"
+  "bugs": {
+    "url": "https://github.com/DaneHarrison/Door-Unlocker/issues"
   },
-  "description": ""
+  "homepage": "https://github.com/DaneHarrison/Door-Unlocker#readme",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
 }
