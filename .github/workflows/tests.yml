@@ -2,9 +2,9 @@ name: Tests
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node-version: [20.3]
+        node-version: [20.3.0]
 
     steps:
       - uses: actions/checkout@v3
