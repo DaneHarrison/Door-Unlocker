@@ -1,10 +1,27 @@
-/*
-    Starting point for the door unlocker, here the server is setup and the mode is set
-*/
-const {Server} = require('./Server');
-const config = require('./Config/Settings');
+import ServerLogic from './logic/serverLogic';
+import AdminRoutes from './api/routes/admin.js';
+import UserRoutes from './api/routes/user.js';
+import Server from './logic/server.js';
+import readline from 'node:readline'
 
-let server = new Server(config.cookieSecret);
+//load databases
 
-//Delay so the database can startup
-setTimeout(() => { server.start(config.serverOpts); }, 5000);
+//Load current mode and device
+let logic = ServerLogic(transactions, logs);
+
+let routes = [UserRoutes, AdminRoutes]
+let server = new Server(routes)
+let cli = readline.createInterface({      
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+})
+
+server.start()
+cli.on('line', (input) => { 
+    if(input == 'close') {
+        cli.close()
+        server.close()
+        console.log('Safe to exit ...')
+    }
+});

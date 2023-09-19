@@ -18,6 +18,15 @@ My first solo project and introduction to web development. Here I learnt the bas
 ## changelog:
 - we swap to import to use tree shaking and prevent dependency issues
 - .env makes it easy to control environment variables and can be accessed by both docker-compose and the server more easily
+- Design patterns
+- Queue system
+- Triggers
+- Logging
+- Design architecture
+
+## Further improvements
+- Security?
+- Better device setup? - send over serial
 
 ## Acknowledgements:
 - Cubes
