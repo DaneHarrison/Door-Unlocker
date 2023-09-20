@@ -8,7 +8,7 @@ import Server from './api/server';
 import readline from 'node:readline'
 
 
-// Loads the middleware for their respective routers
+// Loads middleware onto their respective routers
 let sessionManager = new SessionManager()
 let authorizer = new Authorizer()
 new Authenticator(sessionManager)
@@ -17,7 +17,7 @@ UserRoutes.use(sessionManager.load, authorizer.setAllowedLvl, authorizer.verifyA
 AdminRoutes.use(sessionManager.load, authorizer.setAdminLvl, authorizer.verifyAccess, sessionManager.update)
 
 
-// Loads server and enables cli input
+// Load server and enable cli input
 let server = new Server([AuthRoutes, UserRoutes, AdminRoutes])
 let cli = readline.createInterface({      
     input: process.stdin,
@@ -26,7 +26,7 @@ let cli = readline.createInterface({
 })
 
 
-// Processes requests and cli input
+// Process server requests and cli input until shutdown
 server.start()
 cli.on('line', (input) => { 
     if(input == 'close') {
