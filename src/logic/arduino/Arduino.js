@@ -4,8 +4,8 @@
 const arduino = require('./Config/Addresses').arduino;
 const axios = require('axios');
 
-
-class Arduino { 
+// can make this an observer?
+export default class Arduino { 
 
 /*
     Core function; all others rely on this.  Sends a post request to arduino
@@ -45,8 +45,4 @@ class Arduino {
 
         this._postToServer(options);
     }
-}
-
-module.exports = {
-    Arduino
 }

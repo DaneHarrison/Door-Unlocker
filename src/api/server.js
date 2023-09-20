@@ -21,7 +21,7 @@ import https from 'https';
 import path from 'path'
 //const process = require('process');
 
-export default class Server { 
+export default class Server { //this is where we will want to load authentication and authorization
     constructor(routes) {
         this._server = express();
         // this._server.use(passport.initialize());

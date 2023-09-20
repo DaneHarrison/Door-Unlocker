@@ -1,10 +1,9 @@
 const {DBAdapter} = require('../DBAdapter');
 const Puid = require('puid');
 const home = require('../Config/Addresses').server;
-
+sessionDB
 
 class Session {
-
     restrict(req, res, next) {
         req.clearance = 'admin';
         next();

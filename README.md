@@ -23,6 +23,7 @@ My first solo project and introduction to web development. Here I learnt the bas
 - Triggers
 - Logging
 - Design architecture
+- fixed a bug where throwing an error gave access - false by default
 
 ## Further improvements
 - Security?
