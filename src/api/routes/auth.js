@@ -13,8 +13,6 @@ authRoutes.get('/login/redirect/', Passport.authenticate('google', {session: fal
     if(req.user.sessionID && req.user.accessLvl) {
         res.cookie('sessionID', req.user.sessionID, secureConfig);
         res.cookie('accessLvl', req.accessLvl);
-
-        res.cookie('SessionID', req.user.sessionID, {signed: true, expires: new Date(Date.now + 900000)});
     }
 
     res.redirect('/');

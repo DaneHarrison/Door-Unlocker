@@ -1,4 +1,4 @@
-import Access from'../api/security/accessLevels'
+import Access from'../api/security/config/accessLevels'
 import ModeFactory from './modes/modeFactory';
 import Arduino from './arduino/Arduino';
 import LogDB from '../persistance/logDB';
