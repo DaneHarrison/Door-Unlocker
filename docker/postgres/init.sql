@@ -1,11 +1,11 @@
 CREATE TABLE friends (
     friend_id       SERIAL PRIMARY KEY,
-    friend_name     VARCHAR,
-    email           VARCHAR,
+    friend_name     VARCHAR NOT NULL UNIQUE,
+    email           VARCHAR NOT NULL UNIQUE,
     access_lvl      VARCHAR DEFAULT 'not allowed',
     last_accessed   DATE,
 
-    CONSTRAINT chk_friend_role CHECK (access_lvl IN ('locked', 'not allowed', 'allowed', 'admin'))
+    CONSTRAINT chk_friend_access_lvl CHECK (access_lvl IN ('locked', 'not allowed', 'allowed', 'admin'))
 );
 
 CREATE TABLE sessions (
@@ -14,7 +14,7 @@ CREATE TABLE sessions (
     access_lvl  VARCHAR,
 
     FOREIGN KEY (friend_id) REFERENCES friends(friend_id),
-    CONSTRAINT chk_session_role CHECK (access_lvl IN ('locked', 'not allowed', 'allowed', 'admin'))
+    CONSTRAINT chk_session_access_Lvl CHECK (access_lvl IN ('locked', 'not allowed', 'allowed', 'admin'))
 );
 
 CREATE TABLE query_logs (

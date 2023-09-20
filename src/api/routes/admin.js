@@ -2,11 +2,6 @@ import express from 'express';
 
 
 let adminRoutes = express.Router()
-// adminRoutes.use((req, res, next) => {
-//     console.log('Time: ', Date.now())
-//     next()
-// }) this._sesh.restrict, this._sesh.verify,
-
 
 adminRoutes.get('/fetchList/', async(req, res) => {
     res.send()
@@ -14,7 +9,7 @@ adminRoutes.get('/fetchList/', async(req, res) => {
     // res.send(JSON.stringify(listOfFriends));
 });
 
-adminRoutes.post('/modify/admin', async(req, res) => { 
+adminRoutes.post('/modify/admin/', async(req, res) => { 
     // if(req.body.role == 'notAllowed' || req.body.role == 'allowed') {
     //     this._logic.modUserPerms(req.signedCookies['SessionID'], req.body.name, req.body.role);
     // }

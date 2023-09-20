@@ -31,3 +31,8 @@ My first solo project and introduction to web development. Here I learnt the bas
 
 ## Acknowledgements:
 - Cubes
+
+//add emailer to fails and lock outs
+//could move session management to a memcache db
+
+//might throw error double check - cookie domian attr
