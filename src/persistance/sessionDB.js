@@ -1,40 +1,75 @@
 import db from './database/dbInstance';
+import LogDB from './logDB';
+
 
 export default class SessionDB {
-    loadSession(sessionID) {
-        let query = {
-            text: 'SELECT friend_id, role FROM sessions WHERE session_id = $1',
-            values: [sessionID],
-        }
-
-        db.queueRequest(query)
+    constructor() {
+        this._logDB = new LogDB(__filename.split(/[\\/]/).pop())
+        this._timer = new Date()
     }
 
-    createSession(sessionID, email) {
+
+    async loadSession(session_id) {
+        let results = null
         let query = {
-            text: 'INSERT INTO sessions (session_id, friend_id, role) VALUES($1, (SELECT friend_id, role FROM friends WHERE email = $2))',
-            values: [sessionID, email]
+            name: 'loadSession',
+            text: 'SELECT friend_id, access_lvl FROM sessions WHERE session_id = $1',
+            values: [session_id],
         }
 
-        db.queueRequest(query)
+        try {
+            results = await db.queueRequest(query) 
+        }
+        catch(error) {
+            recordError(error, 'loadSession')
+        }
+
+        return results
     }
 
-    updateSession(prevSessionID, newSessionID) {
+    createSession(session_id, email) {
         let query = {
+            name: 'createSession',
+            text: 'INSERT INTO sessions (session_id, friend_id, access_lvl) VALUES($1, (SELECT friend_id, access_lvl FROM friends WHERE email = $2))',
+            values: [session_id, email]
+        }
+
+        try {
+            db.queueRequest(query) 
+        }
+        catch(error) {
+            recordError(error, 'createSession')
+        }
+    }
+
+    updateSession(prev_session_id, new_session_id) {
+        let query = {
+            name: 'updateSession',
             text: 'UPDATE sessions SET session_id = $1 WHERE session_id = $2',
-            values: [prevSessionID, newSessionID]
+            values: [prev_session_id, new_session_id]
         }
 
-        db.queueRequest(query)
+        try {
+            db.queueRequest(query) 
+        }
+        catch(error) {
+            recordError(error, 'updateSession')
+        }
     }
 
-    deleteSession(sessionID) {
+    deleteSession(session_id) {
         let query = {
+            name: 'deleteSession',
             text: 'DELETE * sessions WHERE session_id = $1',
-            values: [sessionID]
+            values: [session_id]
         }
 
-        db.queueRequest(query)
+        try {
+            db.queueRequest(query) 
+        }
+        catch(error) {
+            recordError(error, 'deleteSession')
+        }
     }
 
     clearAllSessions() {
@@ -42,6 +77,11 @@ export default class SessionDB {
             text: 'DELETE * sessions'
         }
 
-        db.queueRequest(query)
+        try {
+            db.queueRequest(query) 
+        }
+        catch(error) {
+            recordError(error, 'clearAllSessions')
+        }
     }
 }

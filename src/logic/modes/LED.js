@@ -10,6 +10,13 @@ export default class LED extends Mode {
     }
 
 
+    _reset() {
+        super._reset()
+
+        this.user = null;
+        this.pattern = null;
+    }
+    
     prepare(user) {
         let numColors = user == 'Donna' ? 3 : this.colours.length;   //Donna only wants orangey-pink, green, blue (3) or color.length
         let prepared = false
@@ -33,23 +40,14 @@ export default class LED extends Mode {
         let valid = false;
         
         if(user == this.user) {
+            valid = input.length == this.pattern.length
             this._reset()
             
             for(let i = 0; i < this.pattern.length && valid; i++) {
-                valid = input[i] === pattern[i];
+                valid = input[i] == pattern[i];
             }
         }
 
         return valid;
-    }
-
-    _reset() {
-        if(this.timeout) {
-            clearTimeout(this.timeout)
-            this.timeout = null
-        }
-
-        this.user = null;
-        this.pattern = null;
     }
 }

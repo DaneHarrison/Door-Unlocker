@@ -11,6 +11,13 @@ export default class Mode {
     }
   
     
+    _reset() {
+        if(this.timeout) {
+            clearTimeout(this.timeout)
+            this.timeout = null
+        }
+    }
+
     prepare() {
         throw new Error("Method 'prepare()' must be implemented.");
     }
