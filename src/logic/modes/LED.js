@@ -1,4 +1,4 @@
-import Mode from './mode';
+import Mode from './mode.js';
 
 export default class LED extends Mode {
     static SEQ_LENGTH = 5

@@ -36,3 +36,8 @@ My first solo project and introduction to web development. Here I learnt the bas
 //could move session management to a memcache db
 
 //might throw error double check - cookie domian attr
+
+- Make queueRequest create a function to give to workers
+- need to setup so that when session changes it persists to all tables (stored procedure)
+- need to make latest login persist as well (stored procedure)
+- update frontend (React)

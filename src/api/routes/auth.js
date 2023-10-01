@@ -1,4 +1,5 @@
-import secureConfig from '../security/cookies/secureConfig';
+import secureConfig from '../security/config/secureCookie.js';
+import Passport from 'passport';
 import express from 'express';
 
 

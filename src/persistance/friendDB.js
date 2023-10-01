@@ -1,10 +1,10 @@
-import db from './database/dbInstance';
-import LogDB from './logDB';
+import {db} from './database/dbInstance.js';
+import LogDB from './logDB.js';
 
 
 export default class FriendDB {
     constructor() {
-        this._logDB = new LogDB(__filename.split(/[\\/]/).pop())
+        this._logDB = new LogDB('friendDB.js')
         this._timer = new Date()
     }
 

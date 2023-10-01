@@ -1,4 +1,4 @@
-import Access from'./config/accessLevels'
+import Access from'./config/accessLevels.js';
 
 
 export default class Authorizer {

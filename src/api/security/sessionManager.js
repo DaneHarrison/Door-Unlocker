@@ -1,11 +1,11 @@
-import puid from 'puid'
-import SessionDB from '../../persistance/sessionDB'
-import secureConfig from './cookies/secureConfig';
+import SessionDB from '../../persistance/sessionDB.js';
+import secureConfig from './config/secureCookie.js';
+import puid from 'puid';
 
 export default class SessionManager {
     constructor() {
-        this._idGenerator = new puid()
         this._sessionDB = new SessionDB()
+        this._idGenerator = new puid()
         this._idsInUse = []
     }
 

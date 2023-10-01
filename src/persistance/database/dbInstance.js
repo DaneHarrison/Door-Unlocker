@@ -1,3 +1,3 @@
-import Database from './database';
+import Database from './database.js';
 
-export default DBInstance = new Database()
+export const db = new Database();

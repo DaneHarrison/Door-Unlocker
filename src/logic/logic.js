@@ -1,8 +1,8 @@
-import Access from'../api/security/config/accessLevels'
-import ModeFactory from './modes/modeFactory';
-import Arduino from './arduino/Arduino';
-import LogDB from '../persistance/logDB';
-import FriendDB from '../persistance/friendDB';
+import Access from'../api/security/config/accessLevels.js';
+import ModeFactory from './modes/modeFactory.js';
+import Arduino from './arduino/Arduino.js';
+import LogDB from '../persistance/logDB.js';
+import FriendDB from '../persistance/friendDB.js';
 
 
 export default class ServerLogic { //eventually should cache friends
@@ -10,7 +10,7 @@ export default class ServerLogic { //eventually should cache friends
         this._mode = new ModeFactory();
         this._arduino = new Arduino();
 
-        this._logDB = new LogDB(__filename.split(/[\\/]/).pop())
+        this._logDB = new LogDB('logic.js')
         this._friendDB = new FriendDB()
     }
 

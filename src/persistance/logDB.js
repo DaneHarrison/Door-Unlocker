@@ -1,4 +1,4 @@
-import db from './database/dbInstance';
+import {db} from './database/dbInstance.js';
 
 export default class LogDB {
     constructor(filename) {

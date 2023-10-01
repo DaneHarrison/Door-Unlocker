@@ -1,11 +1,10 @@
 import fs from 'fs';
 import express from 'express';
-import 'dotenv/config' //this can be deleted later
 import https from 'https';
-import path from 'path'
-import bodyParser from 'body-parser'
-import cookieParser from 'cookie-parser'
-import passport from 'passport'
+import path from 'path';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
 
 
 export default class Server {
@@ -16,7 +15,7 @@ export default class Server {
         this._server.use(passport.initialize());
         this._server.use(bodyParser.json());
 
-        for(let route in routes) {
+        for(let route of routes) {
             this._server.use('/', route);
         }
 
@@ -35,7 +34,7 @@ export default class Server {
 
     close() {
         this._server.close();
-        this.clearSessions(); daddad
+        //this.clearSessions(); daddad
         console.log('\t- shut down here')
     } 
 

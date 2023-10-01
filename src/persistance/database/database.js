@@ -1,34 +1,32 @@
+import DBQueue from './dbQueue.js';
+
+
 export default class Database {
-    IDLE_KILL = 5
-    QUEUE_LENGTH_b4_DEPLOYMENT
-    NEW_CLIENT_DELAY = 5
-    MAX_CLIENTS = 5
+    DEPLOYMENT_QUEUE_LENGTH = 10
+    CLIENT_TIMEOUT = 180000 // 3 minutes in milliseconds
+    MAX_CLIENTS = 10
     
     constructor() {
-        this._queue = PriorityQueue()
-        this._pool = []
+        this._queue = new DBQueue();
+        this._killTimer = null;
     }
 
-
-    _deployClient() {
-        return client = new Client({
-            database: process.env.DB,
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PWD
-        })
-    }
 
     get numPending() {
-        return this._queue.length
+        return this._queue.numTasks
     }
 
-    queueRequest() {
+    async queueRequest(request) { //this part is responsible for managing new requets -> check num workers is atleast 1
+        //get request and convert to a function to run for workers that simply require the connection
 
+        return await this.runTask(request)
     }
-    //queue
-    //create clients dynamically
-    //get next from queue
-    //do when timeout cut connections in half unless only 1 prefer even numbers when pool reaches empty
+
+    _maintainWorkers() {
+        //also check that no more than 5 are waiting
+            //queue
+        //create clients dynamically
+        //get next from queue
+        //do when timeout cut connections in half unless only 1 prefer even numbers when pool reaches empty
+    }
 }
