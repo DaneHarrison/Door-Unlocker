@@ -10,24 +10,37 @@ export default class SessionManager {
     }
 
 
-    load(req, res, next) {
-        let sessionID = req.signedCookies['sessionID'];
+    load = async (req, res, next) => {
+        //let sessionID = req.signedCookies['sessionID'];
+        let sessionID = 1
+        let validUser = await this._loadFromSession(req, sessionID)
 
-        if(!sessionID || !this._loadFromSession(req, sessionID)) 
+        
+        
+        if(!sessionID || !validUser) 
             res.redirect('/login/');
-
-        next()
+        else 
+            next()
     }
 
-    async update(req, res, next) {
+    update = async (req, res, next) => {
         let oldSessionID = req.signedCookies['sessionID']
         let newSessionID = this._createToken()
 
         this._idsInUse.splice(this._idsInUse.indexOf(oldSessionID))
         await this._sessionDB.updateSession(oldSessionID, newSessionID)
         
-        res.cookie('sessionID', newSessionID, secureConfig);
-        res.cookie('accessLvl', req.accessLvl);
+
+        // console.log(res.locals.userID)
+        // console.log(res.locals)
+        // res.cookie('sessionID', newSessionID, secureConfig);
+        // res.cookie('accessLvl', req.accessLvl);
+
+        next()
+    }
+
+    persist(req, res, next) {
+        req.app.locals.sessions.push({'sessionID': 1, 'userID': req.userID, 'authorized': req.authorized})
 
         next()
     }
@@ -54,7 +67,7 @@ export default class SessionManager {
         if(userInfo) {
             validUser = true
             req.userID = userInfo.friend_id
-            req.accessLvl = userInfo.accessLvl
+            req.accessLvl = userInfo.access_lvl
         }
 
         return validUser

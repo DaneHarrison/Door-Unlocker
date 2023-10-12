@@ -9,7 +9,7 @@ CREATE TABLE friends (
 );
 
 CREATE TABLE sessions (
-    session_id  PRIMARY KEY,
+    session_id  VARCHAR PRIMARY KEY,
     friend_id   INT,
     access_lvl  VARCHAR,
 

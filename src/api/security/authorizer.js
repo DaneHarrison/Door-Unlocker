@@ -9,6 +9,7 @@ export default class Authorizer {
 
     setAdminLvl(req, res, next) {
         req.reqAccessLvl = Access.ADMIN
+        
         next()
     }
 

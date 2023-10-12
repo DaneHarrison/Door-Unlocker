@@ -1,3 +1,6 @@
+import pgnode from 'pg'
+
+
 export default class DBQueue {
     constructor(numWorkers = 2) {
         this._numWorkers = numWorkers
@@ -23,15 +26,12 @@ export default class DBQueue {
         let task, conn;
 
         this._currNumWorkers += 1;
+        conn = this._deployClient()
+        await conn.connect()
+
         while(this._currNumWorkers <= this._numWorkers) { 
-            try {
-                conn = this._deployClient
-                task = await this.getNextTask();
-                await task(conn);
-            }
-            catch(error) {
-                console.log(error)
-            }
+            task = await this.getNextTask();
+            await task(conn); // execute task that we get back with the given connection
         }
 
         this._currNumWorkers -= 1; 
@@ -39,12 +39,17 @@ export default class DBQueue {
     }
 
     _deployClient() {
-        return client = new Client({
-            database: process.env.DB,
-            host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            user: process.env.DB_USER,
-            password: process.env.DB_PWD
+        return new pgnode.Client({
+            database: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            user: 'user',
+            password: 'password'
+            // database: String(process.env.DB),
+            // host: String(process.env.DB_HOST),
+            // port: process.env.DB_PORT,
+            // user: String(process.env.DB_USER),
+            // password: String(process.env.DB_PWD)
         })
     }
 
@@ -58,13 +63,13 @@ export default class DBQueue {
         })
     }
 
-    runTask(task) {
-        return new Promise((resolve, reject) => {
-            let taskWrapper = async (client) => {
-                let taskPromise = task(client)
+    runTask(query) {
+        let taskPromise
 
+        return new Promise((resolve, reject) => {            
+            let taskWrapper = async (conn) => {
+                taskPromise = conn.query(query)
                 taskPromise.then(resolve, reject)
-
                 return taskPromise
             }
 

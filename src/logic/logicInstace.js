@@ -1,3 +1,5 @@
 import ServerLogic from './logic.js';
 
-export const LogicInstance = new ServerLogic();
+const LogicInstance = new ServerLogic();
+
+export default LogicInstance;

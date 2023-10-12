@@ -25,10 +25,10 @@ export default class FriendDB {
             successful = results.rowCount && results.rowCount == 1
         }
         catch(error) {
-            recordError(error, 'modUserAccess')
+            this._logDB.recordError(error, 'modUserAccess')
         }
 
-        recordQuery(query.text, query.values, this._timer.getTime() - start)
+        this._logDB.recordQuery(query.text, query.values, this._timer.getTime() - start)
 
         return successful
     }
@@ -49,10 +49,10 @@ export default class FriendDB {
             successful = results.rowCount && results.rowCount == 1
         }
         catch(error) {
-            recordError(error, 'createUser')
+            this._logDB.recordError(error, 'createUser')
         }
 
-        recordQuery(query.text, query.values, this._timer.getTime() - start)
+        this._logDB.recordQuery(query.text, query.values, this._timer.getTime() - start)
 
         return successful
     }
@@ -61,19 +61,20 @@ export default class FriendDB {
         let results = null
         let query = {
             name: 'getFriendDetails',
-            text: 'SELECT friend_id, friend_name, access_lvl FROM friends'
+            text: 'SELECT friend_id, friend_name, access_lvl FROM public.friends'
         }
 
         let start = this._timer.getTime()
 
         try {
             results = await db.queueRequest(query) 
+            results = results.rows
         }
         catch(error) {
-            recordError(error, 'getFriendDetails')
+            this._logDB.recordError(error, 'getFriendDetails')
         }
 
-        recordQuery(query.text, null, this._timer.getTime() - start)
+        this._logDB.recordQuery(query.text, null, this._timer.getTime() - start)
 
         return results
     }

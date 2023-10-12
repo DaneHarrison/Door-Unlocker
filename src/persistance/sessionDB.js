@@ -13,15 +13,17 @@ export default class SessionDB {
         let results = null
         let query = {
             name: 'loadSession',
-            text: 'SELECT friend_id, access_lvl FROM sessions WHERE session_id = $1',
-            values: [session_id]
+            text: 'SELECT friend_id, access_lvl FROM public.sessions WHERE session_id = $1',
+            values: [String(session_id)]
         }
 
         try {
-            results = await db.queueRequest(query)[0]
+            results = await db.queueRequest(query)
+            results = results.rows[0]
         }
         catch(error) {
-            recordError(error, 'loadSession')
+            this._logDB.recordError(error, 'loadSession')
+            console.log('[ERROR]: ' + error)
         }
 
         return results
@@ -30,7 +32,7 @@ export default class SessionDB {
     createSession(session_id, email) {
         let query = {
             name: 'createSession',
-            text: `INSERT INTO sessions (session_id, friend_id, access_lvl) VALUES($1, (SELECT friend_id, access_lvl FROM friends WHERE email = $2));
+            text: `INSERT INTO public.sessions (session_id, friend_id, access_lvl) VALUES($1, (SELECT friend_id, access_lvl FROM friends WHERE email = $2));
                    SELECT access_lvl from friends WHERE email = $2`,
             values: [session_id, email]
         }
@@ -39,29 +41,30 @@ export default class SessionDB {
             db.queueRequest(query) 
         }
         catch(error) {
-            recordError(error, 'createSession')
+            this._logDB.recordError(error, 'createSession')
+            console.log('[ERROR]: ' + error)
         }
     }
 
     async updateSession(prev_session_id, new_session_id) {
-        let query = {
-            name: 'updateSession',
-            text: 'UPDATE sessions SET session_id = $1 WHERE session_id = $2',
-            values: [prev_session_id, new_session_id]
-        }
+        // let query = {
+        //     name: 'updateSession',
+        //     text: 'UPDATE public.sessions SET session_id = $1 WHERE session_id = $2',
+        //     values: [prev_session_id, new_session_id]
+        // }
 
-        try {
-            await db.queueRequest(query) 
-        }
-        catch(error) {
-            recordError(error, 'updateSession')
-        }
+        // try {
+        //     await db.queueRequest(query) 
+        // }
+        // catch(error) {
+        //     this._logDB.recordError(error, 'updateSession')
+        // }
     }
 
     deleteSession(session_id) {
         let query = {
             name: 'deleteSession',
-            text: 'DELETE * sessions WHERE session_id = $1',
+            text: 'DELETE * public.sessions WHERE session_id = $1',
             values: [session_id]
         }
 
@@ -69,20 +72,22 @@ export default class SessionDB {
             db.queueRequest(query) 
         }
         catch(error) {
-            recordError(error, 'deleteSession')
+            this._logDB.recordError(error, 'deleteSession')
+            console.log('[ERROR]: ' + error)
         }
     }
 
     async clearAllSessions() {
         let query = {
-            text: 'DELETE * sessions'
+            text: 'DELETE * public.sessions'
         }
 
         try {
             await db.queueRequest(query) 
         }
         catch(error) {
-            recordError(error, 'clearAllSessions')
+            this._logDB.recordError(error, 'clearAllSessions')
+            console.log('[ERROR]: ' + error)
         }
     }
 }
