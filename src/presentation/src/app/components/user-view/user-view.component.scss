@@ -1,0 +1,37 @@
+h1 {
+    font-size: xxx-large;
+}
+
+p {
+    font-size: larger;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+
+    margin-top:20vh;
+    justify-content: center;
+    text-align: center;
+}
+
+.loginBtn {
+    background-color: #ffdd57;
+    border-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+    width: 100px;
+    height: 40px;
+    font-size: medium;
+    margin-top: 10px;
+}
+
+.logoutBtn {
+    border-color: transparent;
+    background-color: #feecf0;
+    color: #cc0f35;
+
+    margin-top: 10vh;
+    width: 55px;
+    height: 30px;
+    align-self: center;
+}
