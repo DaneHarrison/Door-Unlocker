@@ -11,10 +11,12 @@ export default class Server {
     constructor(routes) {
         this._server = express();
 
+        this._server.use(express.static(process.cwd()+ '/presentation/'));
         this._server.use(cookieParser(process.env.COOKIE_SECRET));
         this._server.use(passport.initialize());
         this._server.use(bodyParser.json());
-
+        this._server.locals.sessions = []
+        
         for(let route of routes) {
             this._server.use('/', route);
         }
@@ -29,12 +31,12 @@ export default class Server {
         let httpsParams = this._loadHTTPSParams()
         
         this._server = https.createServer(httpsParams, this._server).listen(process.env.PORT);
-        console.log(`[SUCCESS] secure server live at ${process.env.PORT}`)
+        console.log(`[SUCCESS] HTTPS server live at ${process.env.ADDRESS}:${process.env.PORT}`)
     }
 
     close() {
         this._server.close();
-        //this.clearSessions(); daddad
+        //this.clearSessions();
         console.log('\t- shut down here')
     } 
 
@@ -42,7 +44,7 @@ export default class Server {
         let keyFile = process.cwd() + process.env.SSL_KEY_FILE
         let certFile = process.cwd() + process.env.SSL_CERT_FILE
 
-        if (!fs.existsSync(keyFile) || !fs.existsSync(certFile)) {
+        if(!fs.existsSync(keyFile) || !fs.existsSync(certFile)) {
             console.log(`[ERROR] SSL configration files missing please run:
                 openssl req -newkey rsa:2048 -new -nodes -x509 -days 365 -keyout .${process.env.SSL_KEY_FILE} -out .${process.env.SSL_CERT_FILE}`
             )

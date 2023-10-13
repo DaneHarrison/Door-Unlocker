@@ -14,8 +14,8 @@ let sessionManager = new SessionManager()
 let authorizer = new Authorizer()
 new Authenticator(sessionManager)
 
-//UserRoutes.use(sessionManager.load, authorizer.setAllowedLvl, authorizer.verifyAccess, sessionManager.update)
-AdminRoutes.use(sessionManager.load, authorizer.setAdminLvl, authorizer.verifyAccess, sessionManager.update)
+//UserRoutes.use(sessionManager.load, authorizer.setAllowedLvl, authorizer.verifyAccess, sessionManager.update, sessionManager.persist)
+AdminRoutes.use(sessionManager.load, authorizer.setAdminLvl, authorizer.verifyAccess, sessionManager.update, sessionManager.persist)
 
 
 // Load server and enable cli input

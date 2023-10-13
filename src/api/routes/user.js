@@ -1,3 +1,4 @@
+import logic from '../../logic/logicInstace.js'
 import express from 'express';
 
 

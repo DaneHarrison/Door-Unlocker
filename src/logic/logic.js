@@ -1,6 +1,6 @@
 import Access from'../api/security/config/accessLevels.js';
 import ModeFactory from './modes/modeFactory.js';
-import Arduino from './arduino/Arduino.js';
+//import Arduino from './arduino/Arduino.js';
 import LogDB from '../persistance/logDB.js';
 import FriendDB from '../persistance/friendDB.js';
 
@@ -8,7 +8,7 @@ import FriendDB from '../persistance/friendDB.js';
 export default class ServerLogic { //eventually should cache friends
     constructor() {
         this._mode = new ModeFactory();
-        this._arduino = new Arduino();
+        //this._arduino = new Arduino();
 
         this._logDB = new LogDB('logic.js')
         this._friendDB = new FriendDB()
@@ -52,7 +52,8 @@ export default class ServerLogic { //eventually should cache friends
             else if(!successful) 
                 details = 'incorrect input'
             else
-                this._arduino.unlock();
+                console.log()
+                //this._arduino.unlock();
         }
         catch(error) {
             details = 'error occured'
@@ -73,8 +74,8 @@ export default class ServerLogic { //eventually should cache friends
         this._logDB.recordAction(user, `modUserAccess - targetID:${targetID} newAccessLvl:${newAccessLvl}`, successful, details)
     }
 
-    createUser(user, authorized, name, email) {
-        let successful = authorized && this._friendDB(name, email)
+    async createUser(user, authorized, name, email) {
+        let successful = authorized && await this._friendDB.createUser(name, email)
         let details = null
 
         if(!authorized) 
@@ -85,14 +86,14 @@ export default class ServerLogic { //eventually should cache friends
         this._logDB.recordAction(user, `createUser - name:${name} email:${email}`, successful, details)
     }
 
-    getFriendDetails(authorized) {
+    async getFriendDetails(user, authorized) {
         let results = null
         let details = null
 
         if(!authorized) 
             details = this._lockAccount(user)
         else {
-            results = this._friendDB.getFriendDetails()
+            results = await this._friendDB.getFriendDetails()
 
             if(results)
                 details ='query failed'
@@ -100,6 +101,6 @@ export default class ServerLogic { //eventually should cache friends
 
         this._logDB.recordAction(user, 'getFriendDetails', results != null, details)
 
-        return this._friendDB
+        return results
     }
 }

@@ -1,22 +1,39 @@
 version: '3.8'
+name: "door-unlocker"
 services:
-  db:
+
+  postgres:
+    build: ./postgres
     image: postgres
-    environment: 
-      POSTGRES_PASSWORD: a83ZTNNcdGBuXw?
-      POSTGRES_USER: owner
-      POSTGRES_DB: unlocker
+    environment:
+      - POSTGRES_DB=${DB}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PWD}
+    restart: unless-stopped
     volumes: 
-      - ./pgdata:/var/lib/postgres/data
+      # The init script needs to be added first, otherwise, docker will think a database already exists
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-  unlocker:
-    stdin_open: true
-    image: 44d169d4452a
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
     depends_on:
-      - db
+      - postgres
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
+    volumes: 
+      - ./pgadmin/data:/data
     ports:
-      - '4000:4000'
+      - '5433:80'
 
-
-# we will want to pull variables from .env file      
+  # unlocker:
+  #   stdin_open: true
+  #   image: 44d169d4452a
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - '4000:4000'  

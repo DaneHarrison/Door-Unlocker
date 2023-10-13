@@ -3,3 +3,4 @@ src/security/SSL/*
 **.env
 **.key
 **.pem
+**data/

@@ -16,10 +16,11 @@ export default class Database {
         return this._queue.numTasks
     }
 
-    async queueRequest(request) { //this part is responsible for managing new requets -> check num workers is atleast 1
+    async queueRequest(query) { //this part is responsible for managing new requets -> check num workers is atleast 1
         //get request and convert to a function to run for workers that simply require the connection
+        let hi = await this._queue.runTask(query)
 
-        return await this.runTask(request)
+        return hi
     }
 
     _maintainWorkers() {

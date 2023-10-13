@@ -41,3 +41,6 @@ My first solo project and introduction to web development. Here I learnt the bas
 - need to setup so that when session changes it persists to all tables (stored procedure)
 - need to make latest login persist as well (stored procedure)
 - update frontend (React)
+
+```docker-compose --env-file .env up```
+connecting to database uses this as addr: ```door-unlocker-postgres-1```
