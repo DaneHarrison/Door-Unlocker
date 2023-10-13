@@ -4,3 +4,5 @@ src/security/SSL/*
 **.key
 **.pem
 **data/
+**.vscode
+**.angular

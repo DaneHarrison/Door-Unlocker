@@ -1,0 +1,75 @@
+span {
+    width: 15vw;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+
+.listEntry {
+    margin-top: -1px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    height: calc(65vh/8.55);
+    scroll-snap-align: start;
+    border-top: 1px solid #000;
+}
+
+.modBtn {
+    background: transparent;
+    width: 65vw;
+    height: auto;
+    border-color: transparent;
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.deleteBtn {
+    border-color: transparent;
+    background-color: #feecf0;
+    color: #cc0f35;
+    border: 01px solid #000; 
+    width: 60%;
+    height: 40%;
+    margin-left: 15%;
+}
+
+.spreadDetails {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-top: 5px;
+}
+
+.giveMoreSpace {
+    position: relative;
+    width: 40%;
+    bottom: -4px;
+}
+
+.smallerTxt {
+    position: relative;
+    font-size: small;
+    bottom: -10px;
+    font-weight: normal;
+    width: 30%;
+}
+
+.adminColor {
+    background-color: lightblue;
+}
+
+.allowedColor {
+    background-color: rgba(135, 238, 144, 0.418);
+}
+
+.notAllowedColor {
+    background-color: rgba(233, 145, 145, 0.418);
+}
+
+.hidden {
+    visibility: hidden;
+}
