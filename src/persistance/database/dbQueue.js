@@ -15,12 +15,26 @@ export default class DBQueue {
     }
 
 
-    get numTasks() {
+    get taskCount() {
         return this._tasks.length;
     }
 
-    get currNumWorkers() {
+    get currWorkerCount() {
         return this._currNumWorkers;
+    }
+
+    increaseNumWorkers(increment = 1) {
+        let prevNumWorkers = this._numWorkers
+        this._numWorkers += increment
+
+        return this._numWorkers - prevNumWorkers
+    }
+
+    cutNumWorkers(factor = 2) {
+        let prevNumWorkers = this._numWorkers
+        this._numWorkers = Math.round(this._numWorkers/factor)
+
+        return prevNumWorkers - this._numWorkers
     }
 
     async spawnWorker() {
@@ -60,23 +74,24 @@ export default class DBQueue {
     }
 
     runTask(query) {
-        return new Promise((resolve, reject) => {            
-            let taskWrapper = async (conn) => {
-                return conn.query(query).then((result) => {
-                    resolve(result);
-                }).catch((error) => {
-                    console.error('[ERROR] Promise rejected with: ', error);
-                    reject(error);
-                });
-            }
+        return query === null ? Promise.resolve(null) :
+            new Promise((resolve, reject) => {            
+                let taskWrapper = async (conn) => {
+                    return conn.query(query).then((result) => {
+                        resolve(result);
+                    }).catch((error) => {
+                        console.error('[ERROR] Promise rejected with: ', error);
+                        reject(error);
+                    });
+                }
 
-            if(this._workers.length !== 0) {
-                let worker = this._workers.shift()
-                worker(taskWrapper)
-            }
-            else {
-                this._tasks.push(taskWrapper)
-            }
-        })
+                if(this._workers.length !== 0) {
+                    let worker = this._workers.shift()
+                    worker(taskWrapper)
+                }
+                else {
+                    this._tasks.push(taskWrapper)
+                }
+            })
     }
 }
