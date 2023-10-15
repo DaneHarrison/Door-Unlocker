@@ -3,7 +3,7 @@ import ModeFactory from './modes/modeFactory.js';
 import Arduino from './arduino/Arduino.js';
 import LogDB from '../persistance/logDB.js';
 import FriendDB from '../persistance/friendDB.js';
-import 'dotenv/config'
+import 'dotenv/config';
 
 
 class Logic {
@@ -11,80 +11,80 @@ class Logic {
         this._mode = new ModeFactory().init(process.env.MECH_MODE);
         this._arduino = new Arduino(process.env.MECH_ADDR);
 
-        this._logDB = new LogDB('logic.js')
-        this._friendDB = new FriendDB()
+        this._logDB = new LogDB('logic.js');
+        this._friendDB = new FriendDB();
     }
 
 
     async _lockAccount(user) {
-        let successful = await this._friendDB.modUserAccess(user, Access.LOCKED)
-        let details = successful ? null : 'query failed'
+        let successful = await this._friendDB.modUserAccess(user, Access.LOCKED);
+        let details = successful ? null : 'query failed';
         
-        this._logDB.recordAction(user, 'lockAccount', successful, details)
+        this._logDB.recordAction(user, 'lockAccount', successful, details);
         
-        return 'not authorized'
+        return 'not authorized';
     }
 
     async prepUnlock(user, authorized) {
-        let prepWork = this._mode.prepare(user)
-        let successful = authorized && prepWork != null
-        let details = null
+        let prepWork = this._mode.prepare(user);
+        let successful = authorized && prepWork != null;
+        let details = null;
 
         try {
             if(!authorized) 
-                details = await this._lockAccount(user)
+                details = await this._lockAccount(user);
             else if(!successful) 
-                details = 'mechanism already in use'
+                details = 'mechanism already in use';
             else 
-                this._arduino.prepare(process.env.MECH_MODE, prepWork)
+                this._arduino.prepare(process.env.MECH_MODE, prepWork);
         }
         catch(error) {
-            details = 'error occured'
-            this._logDB.recordError(error, 'prepUnlock')
+            details = 'error occured';
+            this._logDB.recordError(error, 'prepUnlock');
         }
 
-        this._logDB.recordAction(user, 'prepUnlock', successful, details)
+        this._logDB.recordAction(user, 'prepUnlock', successful, details);
     
         return details
     }
 
     async attemptUnlock(user, authorized, inputPattern) {
-        let successful = authorized && this._mode.determineEntry(user, inputPattern)
-        let details = null
+        let successful = authorized && this._mode.determineEntry(user, inputPattern);
+        let details = null;
 
         try {
             if(!authorized) 
-                details = await this._lockAccount(user)
+                details = await this._lockAccount(user);
             else if(!successful) 
-                details = 'incorrect input'
+                details = 'incorrect input';
             else
-                await this._friendDB.updateLastAccessed(user)
+                await this._friendDB.updateLastAccessed(user);
                 this._arduino.unlock();
         }
         catch(error) {
-            details = 'error occured'
-            this._logDB.recordError(error, 'attemptUnlock')
+            details = 'error occured';
+            this._logDB.recordError(error, 'attemptUnlock');
         }
             
-        this._logDB.recordAction(user, 'attemptUnlock', successful, details)
+        this._logDB.recordAction(user, 'attemptUnlock', successful, details);
 
         return details
     }
 
     async modUserAccess(user, authorized, targetID) {
         let targetsRole = await this._friendDB.getFriendsRole(targetID);
-        let modTo = this._toggleAccces(targetsRole)
+        let modTo = this._toggleAccces(targetsRole);
+        let successful = authorized && modTo && await this._friendDB.modUserAccess(targetID, modTo);
         let details = null;
-        let successful = authorized && modTo && await this._friendDB.modUserAccess(targetID, modTo)
         
         if(!authorized) 
-            details = await this._lockAccount(user)
+            details = await this._lockAccount(user);
         else if(!modTo) 
-            details = 'users role was nontoggleable'
+            details = 'users role was nontoggleable';
         else if(!successful) 
-            details = 'query failed'
+            details = 'query failed';
 
-        this._logDB.recordAction(user, `modUserAccess - targetID: ${targetID} newAccessLvl: ${modTo}`, successful, details)
+        this._logDB.recordAction(user, `modUserAccess - targetID: ${targetID} newAccessLvl: ${modTo}`, successful, details);
     
         return details
     }
@@ -94,61 +94,63 @@ class Logic {
 
         switch(targetsRole) {
             case 'not allowed':
-                modTo = 'allowed'
-                break
+                modTo = 'allowed';
+                break;
                 
             case 'allowed':
-                modTo = 'not allowed'
-                break
+                modTo = 'not allowed';
+                break;
         }
 
         return modTo
     }
 
     async addUser(user, authorized, name, email) {
-        let successful = authorized && await this._friendDB.createUser(name, email)
-        let details = null
+        let successful = authorized && await this._friendDB.createUser(name, email);
+        let details = null;
 
         if(!authorized) 
-            details = await this._lockAccount(user)
+            details = await this._lockAccount(user);
         else if(!successful) 
-            details = 'query failed'
+            details = 'query failed';
 
-        this._logDB.recordAction(user, `createUser - name: ${name} email: ${email}`, successful, details)
+        this._logDB.recordAction(user, `createUser - name: ${name} email: ${email}`, successful, details);
+    
+        return details
     }
 
     async deleteUser(user, authorized, userID) {
-        let successful = authorized && await this._friendDB.deleteUser(userID)
-        let details = null
+        let successful = authorized && await this._friendDB.deleteUser(userID);
+        let details = null;
 
         if(!authorized) 
-            details = await this._lockAccount(user)
+            details = await this._lockAccount(user);
         else if(!successful) 
-            details = 'query failed'
+            details = 'query failed';
 
-        this._logDB.recordAction(user, `deleteUser - userID: ${userID}`, successful, details)
+        this._logDB.recordAction(user, `deleteUser - userID: ${userID}`, successful, details);
     
         return details
     }
 
     async getFriendDetails(user, authorized) {
-        let results = null
-        let details = null
+        let results = null;
+        let details = null;
 
         if(!authorized) 
-            details = this._lockAccount(user)
+            details = this._lockAccount(user);
         else {
-            results = await this._friendDB.getFriendDetails()
+            results = await this._friendDB.getFriendDetails();
 
             if(!results)
-                details ='query failed'
+                details ='query failed';
         } 
 
-        this._logDB.recordAction(user, 'getFriendDetails', results != null, details)
+        this._logDB.recordAction(user, 'getFriendDetails', results != null, details);
 
         return {'friends': results, 'details': details}
     }
 }
 
 
-export const logic = new Logic()
+export const logic = new Logic();

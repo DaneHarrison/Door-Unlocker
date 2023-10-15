@@ -1,8 +1,8 @@
-import { DataService } from '../../classes/data-service.service';
 import { ColorPkrModalComponent } from './color-pkr-modal/color-pkr-modal.component';
+import { DataService } from '../../classes/data-service.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Component } from '@angular/core';
-import Cookie from 'js-cookie'
+import Cookie from 'js-cookie';
 
 
 @Component({
@@ -25,6 +25,7 @@ import Cookie from 'js-cookie'
     `,
     styleUrls: ['./user-view.component.scss']
 })
+
 export class UserViewComponent {
     role: string | undefined;
 
@@ -35,11 +36,11 @@ export class UserViewComponent {
 
     openModal() {
         this.dataService.prepareUnlock().subscribe(() => {
-            this.dialog.open(ColorPkrModalComponent)
-        })
+            this.dialog.open(ColorPkrModalComponent);
+        });
     }
 
     logout() {
-        this.dataService.logout()
+        this.dataService.logout();
     }
 }

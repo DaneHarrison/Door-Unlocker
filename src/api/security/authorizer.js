@@ -3,24 +3,24 @@ import Access from'./config/accessLevels.js';
 
 class Authorizer {
     setAllowedLvl(req, res, next) {
-        req.reqAccessLvl = Access.ALLOWED
+        req.reqAccessLvl = Access.ALLOWED;
         
-        next()
+        next();
     }
 
     setAdminLvl(req, res, next) {
-        req.reqAccessLvl = Access.ADMIN
+        req.reqAccessLvl = Access.ADMIN;
 
-        next()
+        next();
     }
 
     verifyAccess(req, res, next) {
-        req.authorized = false
+        req.authorized = false;
 
         if(req.accessLvl && req.reqAccessLvl)
-            req.authorized = Access.numericizeAccess(req.accessLvl) >= Access.numericizeAccess(req.reqAccessLvl)
+            req.authorized = Access.numericizeAccess(req.accessLvl) >= Access.numericizeAccess(req.reqAccessLvl);
 
-        next()
+        next();
     }
 }
 

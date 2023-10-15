@@ -1,6 +1,6 @@
-import {sessionManager} from './sessionManager.js'
+import {sessionManager} from './sessionManager.js';
 import nodemailer from 'nodemailer';
-import 'dotenv/config'
+import 'dotenv/config';
 
 
 class Authenticator {
@@ -8,24 +8,24 @@ class Authenticator {
         this._emailer = nodemailer.createTransport({
             service: process.env.EMAIL_VENDOR,
             auth: {
-              user: String(process.env.EMAIL),
-              pass: String(process.env.EMAIL_PWD)
+                user: String(process.env.EMAIL),
+                pass: String(process.env.EMAIL_PWD)
             }
         });        
     }
 
 
     async addSession(req, res, next) {
-        req.sessionID = sessionManager.createToken()
-        req.successful = await sessionManager.createSession(req.body.email, req.sessionID)
+        req.sessionID = sessionManager.createToken();
+        req.successful = await sessionManager.createSession(req.body.email, req.sessionID);
 
-        next()
+        next();
     }
 
     setup(req, res, next) {
         req.sessionID = req.params.token;
 
-        next()
+        next();
     }
 
     emailAccessLink(path, recipient, sessionID) {
@@ -39,7 +39,7 @@ class Authenticator {
             'Hope you have a great rest of your day! :)'
         };
 
-        this._emailer.sendMail(email)
+        this._emailer.sendMail(email);
     }
 }
 

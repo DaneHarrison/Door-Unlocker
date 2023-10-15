@@ -7,6 +7,15 @@ export default class Arduino {
     }
 
 
+    _sendRequest(options) {
+        try {
+            axios(options).catch((error) => {});
+        }
+        catch(error) {
+            console.log(error);
+        }
+    }
+
     prepare(mode, prepWork) {
         let options = {
             method: 'post',
@@ -16,11 +25,9 @@ export default class Arduino {
                 cmd: `prep:${mode}`,
                 prepWork: prepWork
             }
-        }
+        };
 
-        axios(options).catch((error) => {
-            console.log(error)
-        })
+        this._sendRequest(options);
     }
 
     unlock() {
@@ -31,10 +38,8 @@ export default class Arduino {
             data: {
                 cmd: 'unlock'
             }
-        }
+        };
 
-        axios(options).catch((error) => {
-            console.log(error)
-        })
+        this._sendRequest(options);
     }
 }

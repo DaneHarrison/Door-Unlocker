@@ -13,11 +13,12 @@ import { Component } from '@angular/core';
     `,
     styleUrls: ['./login-view.component.scss']
 })
+
 export class LoginViewComponent {
-    statusMsg: string
+    statusMsg: string;
 
     constructor(private dataService: DataService) {
-        this.statusMsg = ''
+        this.statusMsg = '';
     }
     
 
@@ -25,13 +26,13 @@ export class LoginViewComponent {
         let emailInput = document.getElementById('email') as HTMLInputElement;
         
         if(emailInput && emailInput.value) {
-            this.dataService.requestlogin(emailInput.value)
-            this.statusMsg = `Sent, please check your inbox!`
-            emailInput.value = ''
+            this.dataService.requestlogin(emailInput.value);
+            this.statusMsg = `Sent, please check your inbox!`;
+            emailInput.value = '';
             
             setTimeout(() => {
-                this.statusMsg = ''
-            }, 2000)
+                this.statusMsg = '';
+            }, 2000);
         }
     }
 }

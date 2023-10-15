@@ -1,5 +1,5 @@
 export default class Mode {
-    static DELAY = 90000   // 1.5 minute (in miliseconds)
+    static DELAY = 90000;   // 1.5 minute (in miliseconds)
 
     constructor() {
         if (this.constructor == Mode) {
@@ -13,8 +13,8 @@ export default class Mode {
     
     _reset() {
         if(this.timeout) {
-            clearTimeout(this.timeout)
-            this.timeout = null
+            clearTimeout(this.timeout);
+            this.timeout = null;
         }
     }
 

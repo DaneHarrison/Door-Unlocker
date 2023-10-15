@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import Cookie from 'js-cookie'
+import Cookie from 'js-cookie';
 
 
 @Component({
@@ -27,7 +27,7 @@ import Cookie from 'js-cookie'
 })
 
 export class AppComponent {
-    role: string | undefined
+    role: string | undefined;
 
     constructor() {
         this.role = Cookie.get('role');
