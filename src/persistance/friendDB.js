@@ -62,7 +62,7 @@ export default class FriendDB {
         let results = null
         let query = {
             name: 'deleteUser',
-            text: 'DELETE FROM public.friends WHERE friend_id = $1',
+            text: 'UPDATE public.friends SET access_lvl = null WHERE friend_id = $1',
             values: [userID]
         }
 

@@ -44,6 +44,8 @@ class Logic {
         }
 
         this._logDB.recordAction(user, 'prepUnlock', successful, details)
+    
+        return details
     }
 
     async attemptUnlock(user, authorized, inputPattern) {
@@ -64,12 +66,30 @@ class Logic {
         }
             
         this._logDB.recordAction(user, 'attemptUnlock', successful, details)
+
+        return details
     }
 
     async modUserAccess(user, authorized, targetID) {
         let targetsRole = await this._friendDB.getFriendsRole(targetID);
-        let successful, modTo;
-        let details = null
+        let modTo = this._toggleAccces(targetsRole)
+        let details = null;
+        let successful = authorized && modTo && await this._friendDB.modUserAccess(targetID, modTo)
+        
+        if(!authorized) 
+            details = await this._lockAccount(user)
+        else if(!modTo) 
+            details = 'users role was nontoggleable'
+        else if(!successful) 
+            details = 'query failed'
+
+        this._logDB.recordAction(user, `modUserAccess - targetID: ${targetID} newAccessLvl: ${modTo}`, successful, details)
+    
+        return details
+    }
+
+    _toggleAccces(targetsRole) {
+        let modTo = null;
 
         switch(targetsRole) {
             case 'not allowed':
@@ -81,14 +101,7 @@ class Logic {
                 break
         }
 
-        successful = authorized && modTo && await this._friendDB.modUserAccess(targetID, modTo)
-
-        if(!authorized || !modTo) 
-            details = await this._lockAccount(user)
-        else if(!successful) 
-            details = 'query failed'
-
-        this._logDB.recordAction(user, `modUserAccess - targetID: ${targetID} newAccessLvl: ${modTo}`, successful, details)
+        return modTo
     }
 
     async addUser(user, authorized, name, email) {
@@ -113,6 +126,8 @@ class Logic {
             details = 'query failed'
 
         this._logDB.recordAction(user, `deleteUser - userID: ${userID}`, successful, details)
+    
+        return details
     }
 
     async getFriendDetails(user, authorized) {
@@ -130,7 +145,7 @@ class Logic {
 
         this._logDB.recordAction(user, 'getFriendDetails', results != null, details)
 
-        return results
+        return {'friends': results, 'details': details}
     }
 }
 

@@ -21,6 +21,7 @@ class SessionManager {
 
         userInfo = await this._sessionDB.loadSession(req.sessionID)
         if(userInfo) {
+            req.successful = true
             req.userID = userInfo.friend_id
             req.accessLvl = userInfo.access_lvl
         }
@@ -31,13 +32,15 @@ class SessionManager {
     update = async (req, res, next) => {
         let oldSessionID = req.sessionID
         let newSessionID = this.createToken()
+        
+        if(req.successful) {
+            this._dropSessionFromMem(oldSessionID)
+            await this._sessionDB.updateSession(oldSessionID, newSessionID)
+            req.sessionID = newSessionID
 
-        this._dropSessionFromMem(oldSessionID)
-        await this._sessionDB.updateSession(oldSessionID, newSessionID)
-        req.sessionID = newSessionID
-
-        res.cookie('sessionID', newSessionID, secure);
-        res.cookie('role', req.accessLvl, expires); 
+            res.cookie('sessionID', newSessionID, secure);
+            res.cookie('role', req.accessLvl, expires);
+        } 
 
         next()
     }
@@ -77,7 +80,11 @@ class SessionManager {
         next()
     }
 
-    async clearAllSession() {
+    clearAllSession = async () =>  {
+        for(session of this._currSessions) {
+            clearTimeout(session.timeout);
+        }
+
         await this._sessionDB.clearAllSessions()
     }
 }
