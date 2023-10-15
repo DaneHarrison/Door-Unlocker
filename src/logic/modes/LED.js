@@ -4,6 +4,8 @@ export default class LED extends Mode {
     static SEQ_LENGTH = 5
 
     constructor() {
+        super()
+        
         //In order they are: green, blue, orangey-pink, purple, red, black, yellow (RGB)
         this.colours = ['137:209:254', '26:148:49', '255:131:98', '102:51:153', '128:0:0', '0:0:0', '255:229:124'];                       
         this.pattern = null;

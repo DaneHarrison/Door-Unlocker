@@ -1,29 +1,24 @@
-import secureConfig from '../security/config/secureCookie.js';
-import Passport from 'passport';
+import {sessionManager} from '../security/sessionManager.js';
+import {authenticator} from '../security/authenticator.js';
 import express from 'express';
 
+const authRoutes = express.Router()
 
-let authRoutes = express.Router()
+authRoutes.post('/login/requestToken/', authenticator.addSession, async (req, res) => { //    
+    if(req.successful) 
+        authenticator.emailAccessLink('/login/loadToken/', req.body.email, req.sessionID)
 
-authRoutes.get('/login/', Passport.authenticate('google', {
-    session: false,
-    scope: ['email']
-}));
+    res.sendStatus(200)  
+})
 
-authRoutes.get('/login/redirect/', Passport.authenticate('google', {session: false}), (req, res) => {
-    if(req.user.sessionID && req.user.accessLvl) {
-        res.cookie('sessionID', req.user.sessionID, secureConfig);
-        res.cookie('accessLvl', req.accessLvl);
-    }
-
+authRoutes.get('/login/loadToken/:token/', authenticator.setup, sessionManager.load, sessionManager.update, (req, res) => {
     res.redirect('/');
 })
 
-authRoutes.get('/logout', (req, res) => {
-    res.clearCookie('accessLvl');
+authRoutes.get('/logout/', sessionManager.load, sessionManager.deleteSession, (req, res) => {  //delete session
     res.clearCookie('sessionID');
-    res.redirect('/auth/login/');
-    res.send();
+    res.clearCookie('role');
+    res.redirect('/');
 });
 
 

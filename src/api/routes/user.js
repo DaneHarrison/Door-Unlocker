@@ -1,8 +1,11 @@
-import logic from '../../logic/logicInstace.js'
+import {sessionManager} from '../security/sessionManager.js';
+import {authorizer} from '../security/authorizer.js';
+import {logic} from '../../logic/logic.js'
 import express from 'express';
 
+const userRoutes = express.Router()
+userRoutes.use(sessionManager.load, authorizer.setAllowedLvl, authorizer.verifyAccess, sessionManager.update)
 
-let userRoutes = express.Router()
 
 userRoutes.get('/unlock/prep/', async (req, res) => {
     // await this._logic.prepUnlock(req.signedCookies['SessionID']);

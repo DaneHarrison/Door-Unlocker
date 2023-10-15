@@ -3,11 +3,12 @@ import ModeFactory from './modes/modeFactory.js';
 //import Arduino from './arduino/Arduino.js';
 import LogDB from '../persistance/logDB.js';
 import FriendDB from '../persistance/friendDB.js';
+import 'dotenv/config'
 
 
-export default class ServerLogic { //eventually should cache friends
+class Logic {
     constructor() {
-        this._mode = new ModeFactory();
+        this._mode = new ModeFactory().init(process.env.MECH_MODE);
         //this._arduino = new Arduino();
 
         this._logDB = new LogDB('logic.js')
@@ -15,8 +16,8 @@ export default class ServerLogic { //eventually should cache friends
     }
 
 
-    _lockAccount(user) {
-        let successful = this._friendDB.modUserAccess(user, Access.LOCKED)
+    async _lockAccount(user) {
+        let successful = await this._friendDB.modUserAccess(user, Access.LOCKED)
         let details = successful ? null : 'query failed'
         
         this._logDB.recordAction(user, 'lockAccount', successful, details)
@@ -30,7 +31,7 @@ export default class ServerLogic { //eventually should cache friends
 
         try {
             if(!authorized) 
-                details = this._lockAccount(user)
+                details = await this._lockAccount(user)
             else if(!successful) 
                 details = 'mechanism already in use'
         }
@@ -48,7 +49,7 @@ export default class ServerLogic { //eventually should cache friends
 
         try {
             if(!authorized) 
-                details = this._lockAccount(user)
+                details = await this._lockAccount(user)
             else if(!successful) 
                 details = 'incorrect input'
             else
@@ -63,27 +64,53 @@ export default class ServerLogic { //eventually should cache friends
         this._logDB.recordAction(user, 'attemptUnlock', successful, details)
     }
 
-    modUserAccess(user, authorized, targetID, newAccessLvl) {
-        let successful = authorized && this._friendDB(targetID, newAccessLvl)
+    async modUserAccess(user, authorized, targetID) {
+        let targetsRole = await this._friendDB.getFriendsRole(targetID);
+        let successful, modTo;
+        let details = null
 
-        if(!authorized) 
-            details = this._lockAccount(user)
+        switch(targetsRole) {
+            case 'not allowed':
+                modTo = 'allowed'
+                break
+                
+            case 'allowed':
+                modTo = 'not allowed'
+                break
+        }
+
+        successful = authorized && modTo && await this._friendDB.modUserAccess(targetID, modTo)
+
+        if(!authorized || !modTo) 
+            details = await this._lockAccount(user)
         else if(!successful) 
             details = 'query failed'
 
-        this._logDB.recordAction(user, `modUserAccess - targetID:${targetID} newAccessLvl:${newAccessLvl}`, successful, details)
+        this._logDB.recordAction(user, `modUserAccess - targetID: ${targetID} newAccessLvl: ${modTo}`, successful, details)
     }
 
-    async createUser(user, authorized, name, email) {
+    async addUser(user, authorized, name, email) {
         let successful = authorized && await this._friendDB.createUser(name, email)
         let details = null
 
         if(!authorized) 
-            details = this._lockAccount(user)
+            details = await this._lockAccount(user)
         else if(!successful) 
             details = 'query failed'
 
-        this._logDB.recordAction(user, `createUser - name:${name} email:${email}`, successful, details)
+        this._logDB.recordAction(user, `createUser - name: ${name} email: ${email}`, successful, details)
+    }
+
+    async deleteUser(user, authorized, userID) {
+        let successful = authorized && await this._friendDB.deleteUser(userID)
+        let details = null
+
+        if(!authorized) 
+            details = await this._lockAccount(user)
+        else if(!successful) 
+            details = 'query failed'
+
+        this._logDB.recordAction(user, `deleteUser - userID: ${userID}`, successful, details)
     }
 
     async getFriendDetails(user, authorized) {
@@ -104,3 +131,5 @@ export default class ServerLogic { //eventually should cache friends
         return results
     }
 }
+
+export const logic = new Logic()

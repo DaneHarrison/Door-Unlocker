@@ -1,28 +1,31 @@
-import fs from 'fs';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 import express from 'express';
 import https from 'https';
 import path from 'path';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import passport from 'passport';
+import fs from 'fs';
+import cors from 'cors'
 
 
 export default class Server {
     constructor(routes) {
         this._server = express();
-
-        this._server.use(express.static(process.cwd()+ '/presentation/'));
+        this._server.use(cors()); //////////////
+        this._server.use(express.static(process.cwd()+ '/presentation/dist/door-unlocker/'));
         this._server.use(cookieParser(process.env.COOKIE_SECRET));
-        this._server.use(passport.initialize());
         this._server.use(bodyParser.json());
-        this._server.locals.sessions = []
         
+
         for(let route of routes) {
             this._server.use('/', route);
         }
 
         this._server.get('/', (req, res) => {
-            res.sendFile(path.join(process.cwd() + '/presentation/webpage.html'));
+            res.sendFile(path.join(process.cwd() + '/presentation/dist/door-unlocker/index.html'));
+        });
+
+        this._server.all('*', (req, res) => {
+            res.redirect('/');
         });
     }
     
@@ -36,8 +39,6 @@ export default class Server {
 
     close() {
         this._server.close();
-        //this.clearSessions();
-        console.log('\t- shut down here')
     } 
 
     _loadHTTPSParams() {

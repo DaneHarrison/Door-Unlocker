@@ -1,87 +1,86 @@
 import SessionDB from '../../persistance/sessionDB.js';
-import secureConfig from './config/secureCookie.js';
+import {secure, expires} from './config/secureCookie.js';
 import puid from 'puid';
+import 'dotenv/config'
 
-export default class SessionManager {
+
+class SessionManager {
     constructor() {
         this._sessionDB = new SessionDB()
         this._idGenerator = new puid()
-        this._idsInUse = []
+        this._currSessions = []
     }
 
 
     load = async (req, res, next) => {
-        //let sessionID = req.signedCookies['sessionID'];
-        let sessionID = 1
-        let validUser = await this._loadFromSession(req, sessionID)
+        let userInfo
 
-        
-        
-        if(!sessionID || !validUser) 
-            res.redirect('/login/');
-        else 
-            next()
-    }
-
-    update = async (req, res, next) => {
-        let oldSessionID = req.signedCookies['sessionID']
-        let newSessionID = this._createToken()
-
-        this._idsInUse.splice(this._idsInUse.indexOf(oldSessionID))
-        await this._sessionDB.updateSession(oldSessionID, newSessionID)
-        
-
-        // console.log(res.locals.userID)
-        // console.log(res.locals)
-        // res.cookie('sessionID', newSessionID, secureConfig);
-        // res.cookie('accessLvl', req.accessLvl);
-
-        next()
-    }
-
-    persist(req, res, next) {
-        req.app.locals.sessions.push({'sessionID': 1, 'userID': req.userID, 'authorized': req.authorized})
-
-        next()
-    }
-
-    async addSession(email) {
-        let sessionID = this._createToken()
-        let accessLvl = await this._sessionDB.createSession(sessionID, email)
-
-        return {
-            'sessionID': sessionID,
-            'accessLvl': accessLvl
+        if(!req.sessionID) {
+            req.sessionID = req.signedCookies['sessionID'];
         }
-    }
 
-    clearAllSession() {
-        this._sessionDB.clearAllSessions()
-        console.log('\t- cleared user sessions')
-    }
-
-    async _loadFromSession(req, sessionID) {
-        let userInfo = await this._sessionDB.loadSession(sessionID)
-        let validUser = false
-
+        userInfo = await this._sessionDB.loadSession(req.sessionID)
         if(userInfo) {
-            validUser = true
             req.userID = userInfo.friend_id
             req.accessLvl = userInfo.access_lvl
         }
 
-        return validUser
+        next()
     }
 
-    _createToken() {
+    update = async (req, res, next) => {
+        let oldSessionID = req.sessionID
+        let newSessionID = this.createToken()
+
+        this._dropSessionFromMem(oldSessionID)
+        await this._sessionDB.updateSession(oldSessionID, newSessionID)
+        req.sessionID = newSessionID
+
+        res.cookie('sessionID', newSessionID, secure);
+        res.cookie('role', req.accessLvl, expires); 
+
+        next()
+    }
+
+    _dropSessionFromMem(oldSessionID) {
+        let session = this._currSessions.find((session) => session.id == oldSessionID)
+        
+        if(session) {
+            clearTimeout(session.timeout);
+            this._currSessions.splice(this._currSessions.indexOf(session))
+        } 
+    }
+
+    createToken() {
         let newSessionID = null
 
         do {
             newSessionID = this._idGenerator.generate()
-        } while(this._idsInUse.includes(newSessionID))
-
-        this._idsInUse.push(newSessionID)
+        } while(this._currSessions.includes(newSessionID))
+        
+        this._currSessions.push({'id': newSessionID, 'timeout': setTimeout(() => {
+                this._sessionDB.deleteSession(newSessionID)   
+                this._currSessions.splice(this._currSessions.indexOf(oldSessionID)) 
+            }, process.env.EXPIREY)
+        })
 
         return newSessionID
     }
+
+    createSession = async (email, sessionID) => {
+        return await this._sessionDB.createSession(email, sessionID)
+    }
+
+    deleteSession = async (req, res, next) => {
+        this._sessionDB.deleteSession(req.sessionID)
+
+        next()
+    }
+
+    async clearAllSession() {
+        await this._sessionDB.clearAllSessions()
+    }
 }
+
+
+export const sessionManager = new SessionManager();

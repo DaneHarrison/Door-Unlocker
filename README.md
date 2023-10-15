@@ -29,9 +29,6 @@ My first solo project and introduction to web development. Here I learnt the bas
 - Security?
 - Better device setup? - send over serial
 
-## Acknowledgements:
-- Cubes
-
 //add emailer to fails and lock outs
 //could move session management to a memcache db
 
@@ -72,3 +69,12 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+UPDATE public.friends 
+SET access_lvl = 'admin' WHERE friend_id = 1;
+
+if you dont subscribe to a request it will not send
+
+https://myaccount.google.com/apppasswords
+
+if this doesnt work its because 2 factor auth is needed

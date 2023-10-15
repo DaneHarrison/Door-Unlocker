@@ -6,3 +6,4 @@ src/security/SSL/*
 **data/
 **.vscode
 **.angular
+**dist

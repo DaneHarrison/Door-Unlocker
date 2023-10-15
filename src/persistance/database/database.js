@@ -1,7 +1,7 @@
 import DBQueue from './dbQueue.js';
 
 
-export default class Database {
+class Database {
     DEPLOYMENT_QUEUE_LENGTH = 10
     CLIENT_TIMEOUT = 180000 // 3 minutes in milliseconds
     MAX_CLIENTS = 10
@@ -31,3 +31,5 @@ export default class Database {
         //do when timeout cut connections in half unless only 1 prefer even numbers when pool reaches empty
     }
 }
+
+export const db = new Database();

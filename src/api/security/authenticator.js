@@ -1,27 +1,47 @@
-import {Strategy as GoogleLogIn} from 'passport-google-oauth20';
-import Passport from "passport";
+import {sessionManager} from './sessionManager.js'
+import nodemailer from 'nodemailer';
+import 'dotenv/config'
 
 
-export default class Authenticator {
-    constructor(sessionManager) {
-        this._sessionManager = sessionManager
-        this._googleSetup();
+class Authenticator {
+    constructor() {
+        this._emailer = nodemailer.createTransport({
+            service: process.env.EMAIL_VENDOR,
+            auth: {
+              user: String(process.env.EMAIL),
+              pass: String(process.env.EMAIL_PWD)
+            }
+        });        
     }
 
 
-    _googleSetup() {
-        let user = null;
+    async addSession(req, res, next) {
+        req.sessionID = sessionManager.createToken()
+        req.successful = await sessionManager.createSession(req.body.email, req.sessionID)
 
-        Passport.use(
-            new GoogleLogIn({
-                callbackURL: process.env.ADDRESS,
-                clientID: process.env.GOOGLE_AUTH_ID,
-                clientSecret: process.env.GOOGLE_AUTH_SECRET
-            }, async (accessToken, refreshToken, email, done) => {
-                user =  await this._sessionManager.addSession(email._json.email)
+        next()
+    }
 
-                return done(null, user);
-            })
-        );
+    setup(req, res, next) {
+        req.sessionID = req.params.token;
+
+        next()
+    }
+
+    emailAccessLink(path, recipient, sessionID) {
+        let email = {
+            from: process.env.EMAIL,
+            to: recipient,
+            subject: 'access link',
+            text: 'Hello!\n' + 
+            'Please use the link below to access the Door-Unlocker service, however, note that it will only be valid for a short time [5 minutes]\n\n' + 
+            `Link: ${process.env.ADDRESS}:${process.env.PORT}${path}${sessionID}/\n\n` +  
+            'Hope you have a great rest of your day! :)'
+        };
+
+        this._emailer.sendMail(email)
     }
 }
+
+
+export const authenticator = new Authenticator();

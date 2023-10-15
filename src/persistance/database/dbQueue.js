@@ -1,8 +1,9 @@
 import pgnode from 'pg'
+import 'dotenv/config'
 
 
 export default class DBQueue {
-    constructor(numWorkers = 2) {
+    constructor(numWorkers = 1) {
         this._numWorkers = numWorkers
         this._currNumWorkers = 0;
         this._tasks = []
@@ -31,7 +32,7 @@ export default class DBQueue {
 
         while(this._currNumWorkers <= this._numWorkers) { 
             task = await this.getNextTask();
-            await task(conn); // execute task that we get back with the given connection
+            await task(conn)    // execute task that we get back with the given connection
         }
 
         this._currNumWorkers -= 1; 
@@ -40,16 +41,11 @@ export default class DBQueue {
 
     _deployClient() {
         return new pgnode.Client({
-            database: 'postgres',
-            host: 'localhost',
-            port: 5432,
-            user: 'user',
-            password: 'password'
-            // database: String(process.env.DB),
-            // host: String(process.env.DB_HOST),
-            // port: process.env.DB_PORT,
-            // user: String(process.env.DB_USER),
-            // password: String(process.env.DB_PWD)
+            database: process.env.DB,
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT,
+            user: process.env.DB_USER,
+            password: process.env.DB_PWD
         })
     }
 
@@ -64,13 +60,14 @@ export default class DBQueue {
     }
 
     runTask(query) {
-        let taskPromise
-
         return new Promise((resolve, reject) => {            
             let taskWrapper = async (conn) => {
-                taskPromise = conn.query(query)
-                taskPromise.then(resolve, reject)
-                return taskPromise
+                return conn.query(query).then((result) => {
+                    resolve(result);
+                }).catch((error) => {
+                    console.error('[ERROR] Promise rejected with: ', error);
+                    reject(error);
+                });
             }
 
             if(this._workers.length !== 0) {

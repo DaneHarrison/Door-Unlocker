@@ -1,3 +1,4 @@
+import { DataService } from '../../classes/data-service.service';
 import { Component } from '@angular/core';
 import Cookie from 'js-cookie'
 
@@ -16,12 +17,21 @@ import Cookie from 'js-cookie'
                 <p>Please get ahold of me if you'd like to change that</p>
             </ng-template>
 
-            <button class='logoutBtn'>logout</button>
+            <button class='logoutBtn' (click)="logout()">logout</button>
 
         </div>
     `,
     styleUrls: ['./user-view.component.scss']
 })
 export class UserViewComponent {
-    role = Cookie.get('role');
+    role: string | undefined;
+
+    constructor(private dataService: DataService) {
+        this.role = Cookie.get('role');
+    }
+
+
+    logout() {
+        this.dataService.logout()
+    }
 }
