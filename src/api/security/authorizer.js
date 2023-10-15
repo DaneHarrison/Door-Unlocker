@@ -1,15 +1,16 @@
 import Access from'./config/accessLevels.js';
 
 
-export default class Authorizer {
+class Authorizer {
     setAllowedLvl(req, res, next) {
         req.reqAccessLvl = Access.ALLOWED
+        
         next()
     }
 
     setAdminLvl(req, res, next) {
         req.reqAccessLvl = Access.ADMIN
-        
+
         next()
     }
 
@@ -22,3 +23,6 @@ export default class Authorizer {
         next()
     }
 }
+
+
+export const authorizer = new Authorizer();

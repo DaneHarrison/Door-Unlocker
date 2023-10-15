@@ -1,39 +1,35 @@
-import logic from '../../logic/logicInstace.js'
+import {sessionManager} from '../security/sessionManager.js';
+import {authorizer} from '../security/authorizer.js';
+import {logic} from '../../logic/logic.js'
 import express from 'express';
+import 'dotenv/config'
+
+const adminRoutes = express.Router()
+adminRoutes.use(sessionManager.load, authorizer.setAdminLvl, authorizer.verifyAccess, sessionManager.update)
 
 
-let adminRoutes = express.Router()
-
-adminRoutes.get('/fetchList/', async (req, res) => {
-    let currSession = req.app.locals.sessions.find((session) => session.sessionID == 1)
-    let listOfFriends
-
-    req.app.locals.sessions = req.app.locals.sessions.filter((session) => session != currSession) 
-    listOfFriends = await logic.getFriendDetails(currSession.userID, currSession.authorized);
+adminRoutes.get('/getFriends/', async (req, res) => {
+    let listOfFriends = await logic.getFriendDetails(req.userID, req.authorized); 
 
     res.send(JSON.stringify(listOfFriends));
 });
 
-adminRoutes.post('/modify/admin/', async(req, res) => { 
-    // if(req.body.role == 'notAllowed' || req.body.role == 'allowed') {
-    //     this._logic.modUserPerms(req.signedCookies['SessionID'], req.body.name, req.body.role);
-    // }
-    // else {
-    //     this._logic.lockAccount(req.signedCookies['SessionID'], 'User attempted to use unauthorized commands');
-    // }
-    res.send();
+adminRoutes.post('/modAccess/', async(req, res) => { 
+    let success = await logic.modUserAccess(req.userID, req.authorized, req.body.userID)
+
+    res.sendStatus(200);
 });
 
 adminRoutes.post('/add/', async(req, res) => {
-    // this._logic.createUser(req.signedCookies['SessionID'], req.body.name, req.body.email);
-    logic.createUser(1, true, req.body.name, req.body.email)
+    let success = await logic.addUser(req.userID, req.authorized, req.body.name, req.body.email)
     
     res.sendStatus(200);
 });
 
 adminRoutes.post('/delete/', async(req, res) => { 
-    // this._logic.deleteUser(req.body.name);
-    res.send();
+    let success = await logic.deleteUser(req.userID, req.authorized, req.body.userID)
+    
+    res.sendStatus(200);
 });
 
 

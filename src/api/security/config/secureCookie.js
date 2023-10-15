@@ -1,9 +1,12 @@
-const secureCookie = {
+import 'dotenv/config'
+
+export const secure = {
     maxAge: process.env.COOKIE_EXPIREY,
-    domain: process.env.ADDRESS, 
     httpOnly: true,
     signed: true,
     secure: true
 }
 
-export default secureCookie;
+export const expires = {
+    maxAge: process.env.COOKIE_EXPIREY
+}

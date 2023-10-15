@@ -4,7 +4,9 @@ export default class LED extends Mode {
     static SEQ_LENGTH = 5
 
     constructor() {
-        //In order they are: green, blue, orangey-pink, purple, red, black, yellow (RGB)
+        super()
+        
+        //In order they are: blue, green, orangey-pink, purple, red, black, yellow (RGB)
         this.colours = ['137:209:254', '26:148:49', '255:131:98', '102:51:153', '128:0:0', '0:0:0', '255:229:124'];                       
         this.pattern = null;
     }
@@ -19,32 +21,33 @@ export default class LED extends Mode {
     
     prepare(user) {
         let numColors = user == 'Donna' ? 3 : this.colours.length;   //Donna only wants orangey-pink, green, blue (3) or color.length
-        let prepared = false
+        let newPattern = null
         
         if(!this.user && !this.pattern) {
             this.pattern = []
 
             for(let i = 0; i < LED.SEQ_LENGTH; i++) {
-                this.pattern.push(this.rgbColours[Math.floor(Math.random() * numColors)]);
+                this.pattern.push(this.colours[Math.floor(Math.random() * numColors)]);
             }
 
             this.timeout = setTimeout(() => {this._reset()}, Mode.DELAY);
             this.user = user;
-            prepared = true;
+            newPattern = this.pattern;
         }
 
-        return prepared
+        return newPattern
     }
   
     determineEntry(user, input) {
+        let savedPattern = this.pattern
         let valid = false;
         
         if(user == this.user) {
-            valid = input.length == this.pattern.length
+            valid = input.length == savedPattern.length
             this._reset()
             
-            for(let i = 0; i < this.pattern.length && valid; i++) {
-                valid = input[i] == pattern[i];
+            for(let i = 0; i < savedPattern.length && valid; i++) {
+                valid = input[i] == savedPattern[i];
             }
         }
 

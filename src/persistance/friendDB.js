@@ -1,4 +1,4 @@
-import {db} from './database/dbInstance.js';
+import {db} from './database/database.js';
 import LogDB from './logDB.js';
 
 
@@ -14,7 +14,7 @@ export default class FriendDB {
         let results = null
         let query = {
             name: 'modUserAccess',
-            text: 'UPDATE friends SET access_lvl = $1 WHERE friend_id = $2',
+            text: 'UPDATE public.friends SET access_lvl = $1 WHERE friend_id = $2',
             values: [newAccessLvl, targetID]
         }
 
@@ -38,8 +38,32 @@ export default class FriendDB {
         let results = null
         let query = {
             name: 'createUser',
-            text: 'INSERT INTO friends (friend_name, email) VALUES ($1, $2)',
+            text: 'INSERT INTO public.friends (friend_name, email) VALUES ($1, $2)',
             values: [name, email]
+        }
+
+        let start = this._timer.getTime()
+
+        try {
+            results = await db.queueRequest(query)
+            successful = results.rowCount && results.rowCount == 1
+        }
+        catch(error) {
+            this._logDB.recordError(error, 'createUser')
+        }
+
+        this._logDB.recordQuery(query.text, query.values, this._timer.getTime() - start)
+
+        return successful
+    }
+
+    async deleteUser(userID) {
+        let successful = false
+        let results = null
+        let query = {
+            name: 'deleteUser',
+            text: 'DELETE FROM public.friends WHERE friend_id = $1',
+            values: [userID]
         }
 
         let start = this._timer.getTime()
@@ -61,7 +85,7 @@ export default class FriendDB {
         let results = null
         let query = {
             name: 'getFriendDetails',
-            text: 'SELECT friend_id, friend_name, access_lvl FROM public.friends'
+            text: 'SELECT friend_id, friend_name, access_lvl FROM public.friends WHERE access_lvl IS NOT null'
         }
 
         let start = this._timer.getTime()
@@ -75,6 +99,29 @@ export default class FriendDB {
         }
 
         this._logDB.recordQuery(query.text, null, this._timer.getTime() - start)
+
+        return results
+    }
+
+    async getFriendsRole(friendID) {
+        let results = null
+        let query = {
+            name: 'getFriendsRole',
+            text: 'SELECT access_lvl FROM public.friends WHERE friend_id = $1',
+            values: [friendID]
+        }
+
+        let start = this._timer.getTime()
+
+        try {
+            results = await db.queueRequest(query) 
+            results = results.rows[0].access_lvl
+        }
+        catch(error) {
+            this._logDB.recordError(error, 'getFriendsRole')
+        }
+
+        this._logDB.recordQuery(query.text, query.values, this._timer.getTime() - start)
 
         return results
     }
