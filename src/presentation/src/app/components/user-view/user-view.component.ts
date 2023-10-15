@@ -1,4 +1,6 @@
 import { DataService } from '../../classes/data-service.service';
+import { ColorPkrModalComponent } from './color-pkr-modal/color-pkr-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 import { Component } from '@angular/core';
 import Cookie from 'js-cookie'
 
@@ -9,7 +11,7 @@ import Cookie from 'js-cookie'
         <div class='container alignTxt'>
             <div *ngIf="role == 'allowed' || role == 'admin'; else notAllowedView">    
                 <h1>Access Granted!</h1>
-                <button class="loginBtn">Unlock</button>
+                <button class="loginBtn" (click)="openModal()">Unlock</button>
             </div>
 
             <ng-template #notAllowedView>
@@ -26,10 +28,16 @@ import Cookie from 'js-cookie'
 export class UserViewComponent {
     role: string | undefined;
 
-    constructor(private dataService: DataService) {
+    constructor(private dataService: DataService, private dialog: MatDialog) {
         this.role = Cookie.get('role');
     }
 
+
+    openModal() {
+        this.dataService.prepareUnlock().subscribe(() => {
+            this.dialog.open(ColorPkrModalComponent)
+        })
+    }
 
     logout() {
         this.dataService.logout()

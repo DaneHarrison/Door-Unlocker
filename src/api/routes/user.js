@@ -8,14 +8,14 @@ userRoutes.use(sessionManager.load, authorizer.setAllowedLvl, authorizer.verifyA
 
 
 userRoutes.get('/unlock/prep/', async (req, res) => {
-    // await this._logic.prepUnlock(req.signedCookies['SessionID']);
-    // res.send(JSON.stringify(this._mode));
-    res.send();
+    await logic.prepUnlock(req.userID, req.authorized);
+
+    res.sendStatus(200);
 });
 
-userRoutes.post('/unlock/attempt/', (req, res) => {
-    // this._logic.attemptUnlock(req.signedCookies['SessionID'], req.body.passcode);
-    res.send();
+userRoutes.post('/unlock/attempt/', async (req, res) => {
+    await logic.attemptUnlock(req.userID, req.authorized, req.body.passcode);
+    res.sendStatus(200);
 });
 
 

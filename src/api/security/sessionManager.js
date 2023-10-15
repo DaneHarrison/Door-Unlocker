@@ -60,7 +60,7 @@ class SessionManager {
         
         this._currSessions.push({'id': newSessionID, 'timeout': setTimeout(() => {
                 this._sessionDB.deleteSession(newSessionID)   
-                this._currSessions.splice(this._currSessions.indexOf(oldSessionID)) 
+                this._currSessions.splice(this._currSessions.indexOf(newSessionID)) 
             }, process.env.EXPIREY)
         })
 

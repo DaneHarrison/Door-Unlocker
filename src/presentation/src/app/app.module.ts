@@ -9,6 +9,9 @@ import { ListedUserComponent } from './components/admin-view/listed-user/listed-
 import { DataService } from './classes/data-service.service';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginViewComponent } from './components/login-view/login-view.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { ColorPkrModalComponent } from './components/user-view/color-pkr-modal/color-pkr-modal.component';
+
 
 @NgModule({
   declarations: [
@@ -16,12 +19,14 @@ import { LoginViewComponent } from './components/login-view/login-view.component
     UserViewComponent,
     AdminViewComponent,
     ListedUserComponent,
-    LoginViewComponent
+    LoginViewComponent,
+    ColorPkrModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule, // Add HttpClientModule here
+    HttpClientModule,
+    MatDialogModule
   ],
   providers: [
       DataService

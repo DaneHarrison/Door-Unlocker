@@ -1,48 +1,45 @@
-// /*
-//     Responsible for sending/recieving data to/from arduino
-// */
-// const arduino = require('./Config/Addresses').arduino;
-// const axios = require('axios');
-
-// // can make this an observer?
-// export default class Arduino { 
-
-// /*
-//     Core function; all others rely on this.  Sends a post request to arduino
-// */
-//     _postToServer(config) {
-//         axios(config)
-//     }
+import axios from 'axios';
 
 
-// /*
-//     Availible requests
-// */
-//     async newSeq(pattern) {
-//         let options = {
-//             method: 'post',
-//             proxy: false,
-//             url: arduino.address,
-//             data: {
-//                 cmd: 'newSeq',
-//                 pattern: pattern
-//             }
-//         }
+export default class Arduino { 
+    constructor(addr) {
+        this._addr = addr;
+    }
 
-//         this._postToServer(options);
-//     }
 
-//     async unlock() {
-//         let options = {
-//             method: 'post',
-//             proxy: false,
-//             url: arduino.address,
-//             data: {
-//                 cmd: 'unlock',
-//                 nounce: this._nounce
-//             }
-//         }
+    _send(options) {
+        try {
+            axios(options)
+        }
+        catch(error) {
+            console.log(error)
+        }
+    }
 
-//         this._postToServer(options);
-//     }
-// }
+    prepare(mode, prepWork) {
+        let options = {
+            method: 'post',
+            proxy: false,
+            url: this._addr,
+            data: {
+                cmd: mode,
+                prepWork: prepWork
+            }
+        }
+
+        this._send(options)
+    }
+
+    unlock() {
+        let options = {
+            method: 'post',
+            proxy: false,
+            url: this._addr,
+            data: {
+                cmd: 'unlock'
+            }
+        }
+
+        this._send(options)
+    }
+}

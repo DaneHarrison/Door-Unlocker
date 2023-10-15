@@ -9,7 +9,15 @@ export class DataService {
   constructor(private http: HttpClient) {}
 
 
-  getFriends(): any {
+  prepareUnlock() {
+    return this.http.get(this.BACKEND_URL + '/unlock/prep/', { responseType: 'text' })
+  }
+
+  attemptUnlock(combo: number[]) {
+    this.http.post(this.BACKEND_URL + '/unlock/attempt/', {'passcode': combo}, { responseType: 'text' }).subscribe(() => {})
+  }
+
+  getFriends() {
     return this.http.get(this.BACKEND_URL + '/getFriends/')
   }
 

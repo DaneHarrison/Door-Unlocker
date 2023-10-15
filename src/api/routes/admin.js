@@ -9,14 +9,12 @@ adminRoutes.use(sessionManager.load, authorizer.setAdminLvl, authorizer.verifyAc
 
 
 adminRoutes.get('/getFriends/', async (req, res) => {
-    console.log(req.sessionID)
     let listOfFriends = await logic.getFriendDetails(req.userID, req.authorized); 
 
     res.send(JSON.stringify(listOfFriends));
 });
 
 adminRoutes.post('/modAccess/', async(req, res) => { 
-    console.log(req.sessionID)
     let success = await logic.modUserAccess(req.userID, req.authorized, req.body.userID)
 
     res.sendStatus(200);

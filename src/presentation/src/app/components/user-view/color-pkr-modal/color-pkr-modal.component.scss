@@ -1,0 +1,91 @@
+.fillScreen {
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #B29FB5;
+}
+
+.wrapBtns {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.wrapInput {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.input {
+    width: 25px;
+    height: 25px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+}
+
+.largeColorSquare {
+    width: 115px;
+    height: 115px;
+    margin: 1px;
+    border: 1px 1px 1px 1px solid black;
+    font-size: 0;
+}
+
+.green {
+    background-color: rgb(137, 209, 254);
+}
+
+.blue {
+    background-color: rgb(26, 148, 49);
+}
+
+.orangeyPink {
+    background-color: rgb(255, 131, 98);
+}
+
+.purple {
+    background-color: rgb(102, 51, 153);
+}
+
+.red {
+    background-color: rgb(128, 0, 0);
+}
+
+.black {
+    background-color: rgb(0, 0, 0);
+}
+
+.yellow {
+    background-color: rgb(255, 229, 124);
+}
+
+.closeBtn {
+    width: 50%;
+    height: 50px;
+    background-color: pink;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+}
+
+.submitBtn {
+    width: 50%;
+    height: 50px;
+    background-color: lightgreen;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+}
+
+.lower {
+    position: absolute;
+    top: 70vh;
+    height: 30vw;
+    left: 0;
+    right: 0;
+}

@@ -1,6 +1,6 @@
 import Access from'../api/security/config/accessLevels.js';
 import ModeFactory from './modes/modeFactory.js';
-//import Arduino from './arduino/Arduino.js';
+import Arduino from './arduino/Arduino.js';
 import LogDB from '../persistance/logDB.js';
 import FriendDB from '../persistance/friendDB.js';
 import 'dotenv/config'
@@ -9,7 +9,7 @@ import 'dotenv/config'
 class Logic {
     constructor() {
         this._mode = new ModeFactory().init(process.env.MECH_MODE);
-        //this._arduino = new Arduino();
+        this._arduino = new Arduino(process.env.MECH_ADDR);
 
         this._logDB = new LogDB('logic.js')
         this._friendDB = new FriendDB()
@@ -26,7 +26,8 @@ class Logic {
     }
 
     async prepUnlock(user, authorized) {
-        let successful = authorized && this._mode.prepare(user)
+        let prepWork = this._mode.prepare(user)
+        let successful = authorized && prepWork != null
         let details = null
 
         try {
@@ -34,6 +35,8 @@ class Logic {
                 details = await this._lockAccount(user)
             else if(!successful) 
                 details = 'mechanism already in use'
+            else 
+                this._arduino.prepare(process.env.MECH_MODE, prepWork)
         }
         catch(error) {
             details = 'error occured'
@@ -53,8 +56,7 @@ class Logic {
             else if(!successful) 
                 details = 'incorrect input'
             else
-                console.log()
-                //this._arduino.unlock();
+                this._arduino.unlock();
         }
         catch(error) {
             details = 'error occured'
@@ -131,5 +133,6 @@ class Logic {
         return results
     }
 }
+
 
 export const logic = new Logic()
