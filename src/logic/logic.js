@@ -58,6 +58,7 @@ class Logic {
             else if(!successful) 
                 details = 'incorrect input'
             else
+                await this._friendDB.updateLastAccessed(user)
                 this._arduino.unlock();
         }
         catch(error) {
@@ -139,7 +140,7 @@ class Logic {
         else {
             results = await this._friendDB.getFriendDetails()
 
-            if(results)
+            if(!results)
                 details ='query failed'
         } 
 

@@ -17,7 +17,7 @@ class Database {
     }
 
     async queueRequest(query) {
-        this.__maintainWorkers()
+        this._maintainWorkers()
 
         return await this._queue.runTask(query)
     }

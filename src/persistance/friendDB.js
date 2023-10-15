@@ -125,4 +125,27 @@ export default class FriendDB {
 
         return results
     }
+
+    async updateLastAccessed(friendID) {
+        let results = null
+        let query = {
+            name: 'updateLastAccessed',
+            text: 'UPDATE public.friends SET last_accessed = now() WHERE friend_id = $1',
+            values: [friendID]
+        }
+
+        let start = this._timer.getTime()
+
+        try {
+            await db.queueRequest(query) 
+            results = true
+        }
+        catch(error) {
+            this._logDB.recordError(error, 'updateLastAccessed')
+        }
+
+        this._logDB.recordQuery(query.text, query.values, this._timer.getTime() - start)
+    
+        return results
+    }
 }

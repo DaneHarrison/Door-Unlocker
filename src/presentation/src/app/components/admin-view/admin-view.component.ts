@@ -35,7 +35,7 @@ export class AdminViewComponent {
         this.friends = []
         this.dataService.getFriends().subscribe((response: any) => {
             for(let line of response) {
-                this.friends.push(new Friend(line.friend_id, line.friend_name, line.access_lvl, 'March'))
+                this.friends.push(new Friend(line.friend_id, line.friend_name, line.access_lvl, line.last_accessed))
             }
   
             Friend.sortFriends(this.friends)
