@@ -9,7 +9,9 @@ export default class Arduino {
 
     _sendRequest(options) {
         try {
-            axios(options).catch((error) => {});
+            axios(options).catch((error) => {
+                throw error
+            });
         }
         catch(error) {
             console.log(error);

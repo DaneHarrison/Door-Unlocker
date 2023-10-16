@@ -4,13 +4,11 @@ import express from 'express';
 import https from 'https';
 import path from 'path';
 import fs from 'fs';
-import cors from 'cors'
 
 
 export default class Server {
     constructor(routes) {
         this._server = express();
-        this._server.use(cors()); //////////////
         this._server.use(express.static(process.cwd()+ '/presentation/dist/door-unlocker/'));
         this._server.use(cookieParser(process.env.COOKIE_SECRET));
         this._server.use(bodyParser.json());
