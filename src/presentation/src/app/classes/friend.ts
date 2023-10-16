@@ -24,7 +24,7 @@ export class Friend {
           return first.name.localeCompare(second.name);
         }
         
-        return accessComparison;
+        return accessComparison
       });
     }
   }

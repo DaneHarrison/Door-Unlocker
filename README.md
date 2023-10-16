@@ -78,3 +78,7 @@ if you dont subscribe to a request it will not send
 https://myaccount.google.com/apppasswords
 
 if this doesnt work its because 2 factor auth is needed
+
+.env files goes in docker - may want to also put it in root folder if running outside of docker
+
+INSERT INTO public.friends (friend_name, email, access_lvl) VALUES ('', '', '')

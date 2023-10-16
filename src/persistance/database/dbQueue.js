@@ -1,38 +1,52 @@
-import pgnode from 'pg'
-import 'dotenv/config'
+import pgnode from 'pg';
+import 'dotenv/config';
 
 
 export default class DBQueue {
     constructor(numWorkers = 1) {
-        this._numWorkers = numWorkers
+        this._numWorkers = numWorkers;
         this._currNumWorkers = 0;
-        this._tasks = []
-        this._workers = []
+        this._tasks = [];
+        this._workers = [];
 
         for(let i = 0; i < this._numWorkers; i++) {
-            this.spawnWorker()
+            this.spawnWorker();
         }
     }
 
 
-    get numTasks() {
+    get taskCount() {
         return this._tasks.length;
     }
 
-    get currNumWorkers() {
+    get currWorkerCount() {
         return this._currNumWorkers;
+    }
+
+    increaseNumWorkers(increment = 1) {
+        let prevNumWorkers = this._numWorkers;
+        this._numWorkers += increment;
+
+        return this._numWorkers - prevNumWorkers;
+    }
+
+    cutNumWorkers(factor = 2) {
+        let prevNumWorkers = this._numWorkers;
+        this._numWorkers = Math.round(this._numWorkers/factor);
+
+        return prevNumWorkers - this._numWorkers;
     }
 
     async spawnWorker() {
         let task, conn;
 
         this._currNumWorkers += 1;
-        conn = this._deployClient()
-        await conn.connect()
+        conn = this._deployClient();
+        await conn.connect();
 
         while(this._currNumWorkers <= this._numWorkers) { 
             task = await this.getNextTask();
-            await task(conn)    // execute task that we get back with the given connection
+            await task(conn);    // execute task that we get back with the given connection
         }
 
         this._currNumWorkers -= 1; 
@@ -46,7 +60,7 @@ export default class DBQueue {
             port: process.env.DB_PORT,
             user: process.env.DB_USER,
             password: process.env.DB_PWD
-        })
+        });
     }
 
     async getNextTask() {
@@ -55,28 +69,29 @@ export default class DBQueue {
                 return resolve(this._tasks.shift())
             } 
 
-            this._workers.push(resolve)
+            this._workers.push(resolve);
         })
     }
 
     runTask(query) {
-        return new Promise((resolve, reject) => {            
-            let taskWrapper = async (conn) => {
-                return conn.query(query).then((result) => {
-                    resolve(result);
-                }).catch((error) => {
-                    console.error('[ERROR] Promise rejected with: ', error);
-                    reject(error);
-                });
-            }
+        return query === null ? Promise.resolve(null) :
+            new Promise((resolve, reject) => {            
+                let taskWrapper = async (conn) => {
+                    return conn.query(query).then((result) => {
+                        resolve(result);
+                    }).catch((error) => {
+                        console.error('[ERROR] Promise rejected with: ', error);
+                        reject(error);
+                    });
+                }
 
-            if(this._workers.length !== 0) {
-                let worker = this._workers.shift()
-                worker(taskWrapper)
-            }
-            else {
-                this._tasks.push(taskWrapper)
-            }
-        })
+                if(this._workers.length !== 0) {
+                    let worker = this._workers.shift();
+                    worker(taskWrapper);
+                }
+                else {
+                    this._tasks.push(taskWrapper);
+                }
+            })
     }
 }

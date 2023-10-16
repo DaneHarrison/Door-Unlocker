@@ -1,4 +1,4 @@
-import LED from './led.js';
+import LED from './LED.js';
 
 
 export default class ModeFactory {
@@ -8,8 +8,8 @@ export default class ModeFactory {
                 return new LED();
                 
             default:
-                console.log('[ERROR] please set an unlocking method in docker/.env')
-                process.exit()
+                console.log('[ERROR] please set an unlocking method in docker/.env');
+                process.exit();
         }
     }
 }

@@ -1,4 +1,5 @@
-import 'dotenv/config'
+import 'dotenv/config';
+
 
 export const secure = {
     maxAge: process.env.COOKIE_EXPIREY,

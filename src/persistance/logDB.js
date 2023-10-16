@@ -1,5 +1,6 @@
 import {db} from './database/database.js';
 
+
 export default class LogDB {
     constructor(filename) {
         this._filename = filename;
@@ -11,9 +12,9 @@ export default class LogDB {
             name: 'recordQuery',
             text: 'INSERT INTO query_logs (query, params, duration) VALUES ($1, $2, $3)',
             values: [recorded_query, params, duration]
-        }
+        };
 
-        db.queueRequest(query)
+        db.queueRequest(query);
     }
 
     recordAction(user_id, action_occured, success, details) {
@@ -21,9 +22,9 @@ export default class LogDB {
             name: 'recordAction',
             text: 'INSERT INTO action_logs (user_id, action_occured, success, details) VALUES ($1, $2, $3, $4)',
             values: [user_id, action_occured, success, details]
-        }
+        };
 
-        db.queueRequest(query)
+        db.queueRequest(query);
     }
 
     recordError(msg, func_occured) {
@@ -31,8 +32,8 @@ export default class LogDB {
             name: 'recordError',
             text: 'INSERT INTO error_logs (msg, file_occured, func_occured) VALUES ($1, $2, $3)',
             values: [msg, this._filename, func_occured]
-        }
+        };
 
-        db.queueRequest(query) 
+        db.queueRequest(query); 
     }
 }
