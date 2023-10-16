@@ -87,6 +87,7 @@ If you intend to make any modifications yourself, please note the following deta
 
         this._server.use(cors());
         ```
+4. You will want to copy the same .env file created under docker to src
 
 <br>
 
@@ -210,10 +211,10 @@ These correspond with the frontend functionalities mentioned above, however, not
 <img src='./.github/img/login.PNG' height=350px>
 <img src='./.github/img/denied.PNG' height=350px>
 <img src='./.github/img/granted.PNG' height=350px>
-<img src='./.github/img/adminUser.PNG' height=350px>
-<img src='./.github/img/Admin.PNG' height=350px>
 <img src='./.github/img/colorChallenge.PNG' height=350px>
 <img src='./.github/img/enteredChallenge.PNG' height=350px>
+<img src='./.github/img/adminUser.PNG' height=350px>
+<img src='./.github/img/Admin.PNG' height=350px>
 </div>
     
 ## changelog:
