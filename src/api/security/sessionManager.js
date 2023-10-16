@@ -1,5 +1,5 @@
-import SessionDB from '../../persistance/sessionDB.js';
 import {secure, expires} from './config/secureCookie.js';
+import SessionDB from '../../persistance/sessionDB.js';
 import puid from 'puid';
 import 'dotenv/config';
 
@@ -9,6 +9,8 @@ class SessionManager {
         this._sessionDB = new SessionDB();
         this._idGenerator = new puid();
         this._currSessions = [];
+
+        this.clearAllSession()
     }
 
 

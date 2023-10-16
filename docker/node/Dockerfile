@@ -1,11 +1,12 @@
-FROM nikolaik/python-nodejs:python3.8-nodejs15
-ENV NODE_ENV = production
+FROM node:latest
+ENV NODE_ENV=production
 WORKDIR /unlocker   
 
-COPY ["package.json", "package-lock.json*", "dependsOn.txt", "/unlocker/"]
-RUN npm install --production && pip install -r dependsOn.txt
+COPY ./src /unlocker
+COPY ./package-lock.json /unlocker
+COPY ./package.json /unlocker
+COPY ./docker/.env /unlocker
+RUN npm install --omit=dev
 
-COPY . /unlocker
-
-CMD cd src/Server && node index.js
-EXPOSE 4000
+CMD node index.js
+EXPOSE 443
