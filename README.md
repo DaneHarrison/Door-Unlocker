@@ -205,6 +205,8 @@ These correspond with the frontend functionalities mentioned above, however, not
 - Cookies are chained together so that in the event it is captured only one session will remain active
 - A user can have many different simultaneous connections available (mostly just because I was interested in implementing it that way, I may change this in the future)
 
+<br>
+
 ## Photos
 
 <div align='center'>
@@ -217,6 +219,8 @@ These correspond with the frontend functionalities mentioned above, however, not
 <img src='./.github/img/Admin.PNG' height=350px>
 </div>
     
+<br>
+
 ## changelog:
 - Swapped to an improved and new responsive frontend design
 - Raw HTML has been replaced with the Angular framework and TypeScript
