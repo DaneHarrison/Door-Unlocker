@@ -1,14 +1,42 @@
 <div align='center'>
-<h1>Door-Unlocker</h1>
+<h1>Door-Unlocker</h1>  
+
+<p>As my very first project, Door Unlocker marks the start of my journey in becoming a Software Engineer! Back then, everything was new and since I've learnt so much since then I thought it would be fun to revisit the project and improve upon its original design!</p>
 </div>
 
 <br>
+<br>
 
-My first solo project and introduction to web development. Here I learnt the basics of web technologies, different software architectures and server authentication. My goal was to experiment with automation and while I was successful, I am currently adjusting its design to reflect aquired knowledge and experience. 
+<div align='right'>
+<img src='./.github/img/Diagram2.0.png' width=400px>
+</div>
 
 <br>
 <br>
+
+## Overview
+- [Setting up]()
+    - [env variables]()
+    - [Docker-Compose]()
+- [Features]()
+    - [Roles]()
+    - [Frontend Features]()
+    - [Injectable Modes]()
+    - [Scaling Database Connections]()
+    - [Producer Consumer Queue]()
+    - [Security]()
+        - [Session Management]()
+        - [Authentication]()
+        - [Authorization]()
+        - [Attack defenses]()
+- [Photos]()
+- [Changelog]()
+- [Acknowledgements]()
+
 <br>
+<br>
+
+Database connections with expontential backoff - sort of like TCP transmissions over the net ... only instead of errors and congestion minimizing the current frame size, traffic increases it.
 
 ## Overview
 - setting up the environment
@@ -82,3 +110,10 @@ if this doesnt work its because 2 factor auth is needed
 .env files goes in docker - may want to also put it in root folder if running outside of docker
 
 INSERT INTO public.friends (friend_name, email, access_lvl) VALUES ('', '', '')
+
+### Changelog:
+- Raw HTML has been replaced with Angular
+- The server logs actions, requests and errors
+- The server uses status codes and error messages
+- Window functions were replaced with automated testing
+- 
