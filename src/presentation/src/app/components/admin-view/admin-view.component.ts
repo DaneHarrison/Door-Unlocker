@@ -25,20 +25,20 @@ export class AdminViewComponent {
     friends: Friend[];
 
     constructor(private dataService: DataService) {
-        this.friends = []
+        this.friends = [];
 
-        this.getFriends()
+        this.getFriends();
     }
 
 
     getFriends() {
-        this.friends = []
+        this.friends = [];
         this.dataService.getFriends().subscribe((response: any) => {
             for(let line of response) {
-                this.friends.push(new Friend(line.friend_id, line.friend_name, line.access_lvl, 'March'))
+                this.friends.push(new Friend(line.friend_id, line.friend_name, line.access_lvl, line.last_accessed));
             }
   
-            Friend.sortFriends(this.friends)
+            Friend.sortFriends(this.friends);
         })
     }
 
@@ -55,13 +55,13 @@ export class AdminViewComponent {
         let emailInput = document.getElementById('emailInput') as HTMLInputElement;
 
         if(nameInput && nameInput.value && emailInput && emailInput.value) {
-            this.friends = []
+            this.friends = [];
             this.dataService.addFriend(nameInput.value, emailInput.value).subscribe(() => {
                 this.getFriends();
             });
 
-            nameInput.value = ''
-            emailInput.value = ''
+            nameInput.value = '';
+            emailInput.value = '';
         }
     }
 

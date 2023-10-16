@@ -18,6 +18,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     `,
     styleUrls: ['./listed-user.component.scss']
 })
+
 export class ListedUserComponent {
     @Input() friend: Friend = {'friendID': -1, 'name': 'null', 'accessLvl': 'admin', 'lastAccessed': 'null'};
     @Output() modEvent = new EventEmitter();

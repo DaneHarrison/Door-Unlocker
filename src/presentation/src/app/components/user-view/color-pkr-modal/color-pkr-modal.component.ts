@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 import { DataService } from '../../../classes/data-service.service';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Component } from '@angular/core';
 
 
 @Component({
@@ -36,7 +36,7 @@ import { DataService } from '../../../classes/data-service.service';
 })
 
 export class ColorPkrModalComponent {
-  combo: number[]
+  combo: number[];
   colors = [
     'purple',
     'green',
@@ -49,23 +49,23 @@ export class ColorPkrModalComponent {
 
   constructor(private dataService: DataService, private dialogRef: MatDialogRef<ColorPkrModalComponent>) {
     this.dialogRef.disableClose = false;
-    this.combo = []
+    this.combo = [];
   }
 
 
   closeModal() {
     this.dialogRef.close();
-    this.combo = []
+    this.combo = [];
   }
 
   addToCombo(color: number) {
-    this.combo.push(color)
+    this.combo.push(color);
   }
 
   submit() {
     this.dialogRef.close();
-    this.dataService.attemptUnlock(this.combo)
+    this.dataService.attemptUnlock(this.combo);
     
-    this.combo = []
+    this.combo = [];
   }
 }

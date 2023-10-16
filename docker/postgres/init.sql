@@ -3,7 +3,7 @@ CREATE TABLE friends (
     friend_name     VARCHAR NOT NULL UNIQUE,
     email           VARCHAR NOT NULL UNIQUE,
     access_lvl      VARCHAR DEFAULT 'not allowed',
-    last_accessed   DATE,
+    last_accessed   DATE DEFAULT NULL,
 
     CONSTRAINT chk_friend_access_lvl CHECK (access_lvl IN ('locked', 'not allowed', 'allowed', 'admin'))
 );
@@ -41,3 +41,23 @@ CREATE TABLE error_logs (
     func_occured    VARCHAR,
     date_occured    DATE NOT NULL DEFAULT CURRENT_DATE   
 );
+
+-- Create a trigger function to update sessions when friend access_lvl changes
+CREATE OR REPLACE FUNCTION update_sessions_access_lvl()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE sessions
+    SET access_lvl = NEW.access_lvl
+    WHERE friend_id = NEW.friend_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create a trigger that calls the trigger function after an update on the friends table
+CREATE TRIGGER friends_access_lvl_trigger
+AFTER UPDATE
+ON friends
+FOR EACH ROW
+EXECUTE FUNCTION update_sessions_access_lvl();
+

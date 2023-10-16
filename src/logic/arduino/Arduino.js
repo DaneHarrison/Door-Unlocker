@@ -7,12 +7,12 @@ export default class Arduino {
     }
 
 
-    _send(options) {
+    _sendRequest(options) {
         try {
-            axios(options)
+            axios(options).catch((error) => {});
         }
         catch(error) {
-            console.log(error)
+            console.log(error);
         }
     }
 
@@ -22,12 +22,12 @@ export default class Arduino {
             proxy: false,
             url: this._addr,
             data: {
-                cmd: mode,
+                cmd: `prep:${mode}`,
                 prepWork: prepWork
             }
-        }
+        };
 
-        this._send(options)
+        this._sendRequest(options);
     }
 
     unlock() {
@@ -38,8 +38,8 @@ export default class Arduino {
             data: {
                 cmd: 'unlock'
             }
-        }
+        };
 
-        this._send(options)
+        this._sendRequest(options);
     }
 }
