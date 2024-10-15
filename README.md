@@ -30,8 +30,8 @@
         - [Session Management](#session-management)
         - [Authentication](#authentication)
         - [Authorization](#authorization)
-- [Photos]()
-- [Changelog]()
+- [Photos](#photos)
+- [Changelog](#changelog)
 
 <br>
 
@@ -221,7 +221,7 @@ These correspond with the frontend functionalities mentioned above, however, not
     
 <br>
 
-## changelog:
+## Changelog
 - Swapped to an improved and new responsive frontend design
 - Raw HTML has been replaced with the Angular framework and TypeScript
 - CSS has been replaced with SCSS
